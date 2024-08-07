@@ -28,7 +28,7 @@ namespace MicroServices.Controllers
             catch (Exception)
             {
 
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, "An error occurred while creating a Patient");
             }
         }
 
@@ -46,7 +46,7 @@ namespace MicroServices.Controllers
             catch (Exception )
             {
 
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, "An error occurred while getting a Patient");
             }
         }
 
@@ -101,7 +101,7 @@ namespace MicroServices.Controllers
             catch (Exception)
             {
 
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, "An error occurred while deleting a Patient");
             }
         }
     }
