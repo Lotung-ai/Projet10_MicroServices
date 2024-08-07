@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  microfrontend:
+    image: ${DOCKER_REGISTRY-}microfrontend
+    build:
+      context: .
+      dockerfile: MicroFrontEnd/Dockerfile
+
+  microservices:
+    image: ${DOCKER_REGISTRY-}microservices
+    build:
+      context: .
+      dockerfile: MicroServices/Dockerfile
+
