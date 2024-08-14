@@ -1,4 +1,5 @@
 using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Add ocelot configuration file and injecting ocelot service
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-builder.Services.AddOcelot();
+builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
 
@@ -15,6 +16,6 @@ var app = builder.Build();
 
 app.UseAuthorization();
 
-app.MapControllers();
+await app.UseOcelot();
 
 app.Run();

@@ -1,80 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Patient Management";
+    ViewData["Title"] = "Home Page";
 }
 
-<div class="container">
-    <h1 class="display-4 text-center">Patient Management</h1>
-
-    <!-- Add Patient Form -->
-    <div class="mb-4">
-        <h2>Add Patient</h2>
-        <form id="addPatientForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" class="form-control" />
-            </div>
-            <button type="submit" class="btn btn-primary">Add Patient</button>
-        </form>
-    </div>
-
-    <!-- Patient List -->
-    <div>
-        <h2>Patients</h2>
-        <ul id="patientList" class="list-group">
-            <!-- Patient items will be added here dynamically -->
-        </ul>
-    </div>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const apiUrl = 'http://localhost:5000/api/patient'; // URL to Ocelot Gateway
-
-            // Function to load patients
-            async function loadPatients() {
-                const response = await fetch(apiUrl);
-                const patients = await response.json();
-                const patientList = document.getElementById("patientList");
-                patientList.innerHTML = '';
-
-                patients.forEach(patient => {
-                    const li = document.createElement('li');
-                    li.className = 'list-group-item';
-                    li.textContent = `ID: ${patient.id}, Name: ${patient.name}, Age: ${patient.age}`;
-                    patientList.appendChild(li);
-                });
-            }
-
-            // Load patients on page load
-            loadPatients();
-
-            // Handle Add Patient Form
-            document.getElementById("addPatientForm").addEventListener("submit", async function (e) {
-                e.preventDefault();
-                const name = document.getElementById("name").value;
-                const age = document.getElementById("age").value;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name: name, age: parseInt(age) })
-                });
-
-                if (response.ok) {
-                    loadPatients();
-                    document.getElementById("name").value = '';
-                    document.getElementById("age").value = '';
-                } else {
-                    alert("Failed to add patient.");
-                }
-            });
-        });
-    </script>
-}
