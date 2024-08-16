@@ -5,7 +5,7 @@ using MicroServices.Models;
 namespace MicroServices.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
@@ -17,7 +17,6 @@ namespace MicroServices.Controllers
 
         // 1.1: Impl�mentez l'API RESTFUL pour cr�er une entit� Patient dans le DataRepository
         [HttpPost]
-
         public async Task<IActionResult> CreatePatient([FromBody] Patient Patient)
         {        
             try
@@ -34,7 +33,6 @@ namespace MicroServices.Controllers
 
         // 1.2: Impl�mentez l'API RESTFUL pour r�cup�rer une entit� Patient
         [HttpGet("{id}")]
-
         public async Task<IActionResult> GetPatientById(int id)
         {
             try

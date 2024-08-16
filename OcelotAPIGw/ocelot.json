@@ -1,7 +1,7 @@
 ﻿{
   "Routes": [
     {
-      "DownstreamPathTemplate": "/Patient/{id}",
+      "DownstreamPathTemplate": "/api/Patient",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -9,11 +9,23 @@
           "Port": 5000 // Port exposé par le microservice dans Docker
         }
       ],
-      "UpstreamPathTemplate": "api/patients/{id}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
+      "UpstreamPathTemplate": "/gateway/patients",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Patient/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5000 // Port exposé par le microservice dans Docker
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/patients/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5003" // URL de base pour Ocelot  // Le port de Ocelot API Gateway. Ocelot http://localhost:5003/api/patients vers http://localhost:5000/Patient.
-  }  
+  }
 }

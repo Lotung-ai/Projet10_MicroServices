@@ -11,12 +11,15 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PatientDb;User Id=sa;Password=Your_password123;Trusted_Connection=True;MultipleActiveResultSets=true; # Chaine de connexion vers SQL Server
     ports:
       - "5000:80"
       - "443:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - sqlserver
 
   ocelotapigw:
     environment:
@@ -24,3 +27,9 @@ services:
     ports:
       - "5003:80"
 
+  sqlserver:
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
