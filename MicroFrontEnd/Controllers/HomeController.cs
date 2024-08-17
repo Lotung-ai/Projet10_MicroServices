@@ -13,9 +13,10 @@ namespace MicroFrontEnd.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IHttpClientFactory httpClientFactory, ILogger<HomeController> logger)
         {
             _logger = logger;
+
         }
 
         public IActionResult Index()
@@ -27,15 +28,15 @@ namespace MicroFrontEnd.Controllers
         {
             return View();
         }
-        public IActionResult PatientManagement()
+        public IActionResult PatientCreate()
         {
             return View();
         }
         public IActionResult PatientDetails()
         {
             return View();
-        }       
-
+        }    
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

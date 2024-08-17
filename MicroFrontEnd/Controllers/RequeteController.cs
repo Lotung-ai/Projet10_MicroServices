@@ -5,6 +5,7 @@ using MicroServices.Models;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Expressions;
 
 namespace MicroFrontEnd.Controllers
 {
@@ -20,8 +21,70 @@ namespace MicroFrontEnd.Controllers
             _httpClient = httpClientFactory.CreateClient(); // Créer le client ici
         }
 
+        //Methde Get pour afficher tous les patients
         [HttpGet]
-        public async Task<IActionResult> PatientDetails(int patientId)
+        public async Task<IActionResult> PatientManagement()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(_apiUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var patients = JsonSerializer.Deserialize<List<Patient>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    return View("/Views/Home/PatientManagement.cshtml",patients); // Assurez-vous que le nom de la vue est correct
+                }
+                else
+                {
+                    _logger.LogError("Unable to retrieve patients from API.");
+                    return View("/Views/Home/PatientManagement.cshtml", new List<Patient>()); // Retourne une vue avec une liste vide
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving patients.");
+                return View("/Views/Home/PatientManagement.cshtml", new List<Patient>()); // Retourne une vue avec une liste vide
+            }
+
+        }
+
+        //Méthode Create pour créer un patient
+        public async Task<IActionResult> PostPatientCreate(Patient patient)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var json = JsonSerializer.Serialize(patient);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await _httpClient.PostAsync(_apiUrl, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Stocker un message de succès dans ViewData
+                        ViewData["SuccessMessage"] = "Patient created successfully!";
+                        return View("/Views/Home/PatientCreate.cshtml");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to create patient. Please try again.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred while creating patient.");
+                    ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+                }
+            }
+
+            return View("/Views/Home/PatientCreate.cshtml", patient);
+        }
+
+        //Méthode Get pour avoir les détails
+        public async Task<IActionResult> GetPatientDetails(int patientId)
         {
             if (patientId <= 0)
             {
@@ -57,8 +120,35 @@ namespace MicroFrontEnd.Controllers
             return View("/Views/Home/PatientDetails.cshtml"); // Nom de la vue sans chemin complet
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PatientManagement(Patient patient)
+        // Méthode GET pour mettre à jour un patient
+        public async Task<IActionResult> GetPatientUpdate(int patientId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{_apiUrl}/{patientId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var patient = JsonSerializer.Deserialize<Patient>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    return View("/Views/Home/PatientUpdate.cshtml", patient);
+                }
+                else
+                {
+                    _logger.LogError("Unable to retrieve patients from API.");
+                    return RedirectToAction("PatientManagement");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving patients.");
+                return RedirectToAction("PatientManagement");
+            }
+        }
+
+        // Méthode PUT pour mettre à jour un patient
+        public async Task<IActionResult> UpdatePatient(Patient patient)
         {
             if (ModelState.IsValid)
             {
@@ -67,25 +157,64 @@ namespace MicroFrontEnd.Controllers
                     var json = JsonSerializer.Serialize(patient);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    var response = await _httpClient.PostAsync(_apiUrl, content);
+                    // Envoyer une requête PUT pour mettre à jour le patient
+                    var response = await _httpClient.PutAsync($"{_apiUrl}/{patient.Id}", content);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        return RedirectToAction("Index", "Home");
+                        ViewData["SuccessMessage"] = "Patient successfully updated!";
+                        return RedirectToAction("PatientManagement");
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Unable to create patient. Please try again.");
+                        ModelState.AddModelError("", "Unable to update patient. Please try again.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while creating patient.");
+                    _logger.LogError(ex, "Error occurred while updating patient.");
                     ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 }
             }
 
-            return View("/Views/Home/PatientMangement.cshtml", patient);
+            // Si une erreur survient, retourner la vue avec les données actuelles du patient
+            return View("/Views/Home/PatientUpdate.cshtml", patient);
         }
+
+        // Méthode DELETE pour supprimer un patient
+        public async Task<IActionResult> DeletePatient(int patientId)
+        {
+            if (patientId <= 0)
+            {
+                ModelState.AddModelError("", "Invalid patient ID.");
+                return RedirectToAction("PatientManagement");
+            }
+
+            try
+            {
+                // Appel à la passerelle API via Ocelot
+                var response = await _httpClient.DeleteAsync($"{_apiUrl}/{patientId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    ViewData["SuccessMessage"] = "Patient deleted successfully.";
+                    return RedirectToAction("PatientManagement");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to delete patient. Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting patient.");
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+            }
+
+            return RedirectToAction("PatientManagement");
+        }
+
     }
 }
+
+

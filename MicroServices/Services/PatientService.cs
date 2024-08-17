@@ -52,7 +52,7 @@ namespace MicroServices.Services
         /// Récupère toutes les offres disponibles.
         /// </summary>
         /// <returns>La tâche représentant l'opération asynchrone, avec une collection des offres comme résultat.</returns>
-        public async Task<IEnumerable<Patient>> GetAllPatientsAsync()
+        public async Task<List<Patient>> GetAllPatientsAsync()
         {
             // Récupérer toutes les offres sous forme de liste.
             return await _context.Patients.ToListAsync();

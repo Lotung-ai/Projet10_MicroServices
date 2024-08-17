@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -15,6 +15,17 @@
   <ItemGroup>
     <ProjectReference Include="..\MicroServices\MicroServices.csproj" />
     <ProjectReference Include="..\OcelotAPIGw\OcelotAPIGw.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Requete\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Home\PatientUpdate.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

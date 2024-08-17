@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": [ "POST", "GET" ]
     },
     {
       "DownstreamPathTemplate": "/api/Patient/{id}",

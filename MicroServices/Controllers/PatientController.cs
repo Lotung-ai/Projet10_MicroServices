@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MicroServices.Services.Interfaces;
 using MicroServices.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicroServices.Controllers
 {
@@ -50,7 +51,6 @@ namespace MicroServices.Controllers
 
         // 1.3: Impl�mentez l'API RESTFUL pour modifier une entit� Patient
         [HttpPut("{id}")]
-
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] Patient Patient)
         {
             if (Patient == null || Patient.Id != id)
@@ -100,6 +100,24 @@ namespace MicroServices.Controllers
             {
 
                 return StatusCode(500, "An error occurred while deleting a Patient");
+            }
+        }
+        // Récupération de tous les Patient
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            try
+            {
+                var Patients = await _patientService.GetAllPatientsAsync();
+                if (Patients == null || !Patients.Any())
+                {
+                    return NotFound();
+                }
+                return Ok(Patients);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving all Patients");
             }
         }
     }
