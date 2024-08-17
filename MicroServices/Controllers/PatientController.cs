@@ -115,7 +115,7 @@ namespace MicroServices.Controllers
                 }
                 return Ok(Patients);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "An error occurred while retrieving all Patients");
             }

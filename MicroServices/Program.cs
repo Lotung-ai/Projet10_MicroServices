@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MicroServices.Services;
 using MicroServices.Services.Interfaces;
 using MicroServices.Data;
+using MicroServices.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -11,6 +12,11 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 
 builder.Services.AddDbContext<PatientDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<PatientDbSettings>(
+    builder.Configuration.GetSection("PatientDatabase"));
+
+builder.Services.AddSingleton<PatientMongoService>();
 
 builder.Services.AddControllers();
  
