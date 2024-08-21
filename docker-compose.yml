@@ -8,8 +8,15 @@ services:
       dockerfile: MicroFrontEnd/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - MicroServicesUrl=http://microservices:5000
+      - OcelotAPIGwUrl=http://ocelotapigw:5003
     ports:
       - "5211:80"
+    depends_on:
+      - microservices
+      - ocelotapigw
+    networks:
+      - app-network
 
   microservices:
     image: ${DOCKER_REGISTRY-}microservices
@@ -18,14 +25,15 @@ services:
       dockerfile: MicroServices/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PatientDb;User Id=sa;Password=Your_password123;Trusted_Connection=True;MultipleActiveResultSets=true;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
+      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      - MongoDbSettings__DatabaseName=PatientDb
     ports:
       - "5000:80"
-      - "443:443"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro"
+    depends_on:
+      - sqlserver
+    networks:
+      - app-network
 
   ocelotapigw:
     image: ${DOCKER_REGISTRY-}ocelotapigw
@@ -36,17 +44,25 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5003:80"
+    networks:
+      - app-network
 
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: sql_server
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=Your_password123
+      - MSSQL_SA_PASSWORD=YourP@ssw0rd
     ports:
-      - "1433:1433"
+      - "5433:1433"
+    networks:
+      - app-network
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - sqlserver-data:/var/opt/mssql
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  sqlserver_data:
+  sqlserver-data:

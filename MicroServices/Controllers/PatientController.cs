@@ -2,6 +2,9 @@
 using MicroServices.Services.Interfaces;
 using MicroServices.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using MicroServices.Data;
+
 
 namespace MicroServices.Controllers
 {
@@ -10,6 +13,7 @@ namespace MicroServices.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
+        private readonly PatientDbContext _context;
 
         public PatientController(IPatientService PatientRepository, ILogger<PatientController> logger)
         {
@@ -49,6 +53,13 @@ namespace MicroServices.Controllers
             }
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetPatientByNameDob(string firstName, string lastName, DateTime dateOfBirth)
+        {
+            var patient = await _patientService.GetPatientByNameDob(firstName, lastName, dateOfBirth);
+
+            return Ok(patient);
+        }
         // 1.3: Impl�mentez l'API RESTFUL pour modifier une entit� Patient
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] Patient Patient)

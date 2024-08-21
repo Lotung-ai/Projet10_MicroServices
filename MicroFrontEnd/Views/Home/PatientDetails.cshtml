@@ -1,4 +1,4 @@
-﻿@model MicroServices.Models.Patient
+﻿@model PatientNoteViewModel
 @{
     ViewData["Title"] = "Get Patient";
 }
@@ -12,28 +12,42 @@
 
 @if (Model != null)
 {
+    <h2>Patient Data</h2>
     <dl>
         <dt>ID</dt>
-        <dd>@Model.Id</dd>
+        <dd>@Model.Patient.Id</dd>
 
         <dt>First Name</dt>
-        <dd>@Model.FirstName</dd>
+        <dd>@Model.Patient.FirstName</dd>
 
         <dt>Last Name</dt>
-        <dd>@Model.LastName</dd>
+        <dd>@Model.Patient.LastName</dd>
 
         <dt>Date of Birth</dt>
-        <dd>@Model.DateOfBirth.ToShortDateString()</dd>
+        <dd>@Model.Patient.DateOfBirth.ToShortDateString()</dd>
 
         <dt>Gender</dt>
-        <dd>@Model.Gender</dd>
+        <dd>@Model.Patient.Gender</dd>
 
         <dt>Address</dt>
-        <dd>@Model.Address</dd>
+        <dd>@Model.Patient.Address</dd>
 
         <dt>Phone Number</dt>
-        <dd>@Model.PhoneNumber</dd>
+        <dd>@Model.Patient.PhoneNumber</dd>
     </dl>
+
+    <h3>Notes</h3>
+    @if (Model.Notes != null && Model.Notes.Any())
+    {
+        <ul>
+            @foreach (var note in Model.Notes)
+            {
+                <li>
+                    <strong>Note:</strong> @note.Note
+                </li>
+            }
+        </ul>
+    }
 }
 else
 {

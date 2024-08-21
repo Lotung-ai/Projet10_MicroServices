@@ -21,6 +21,9 @@ namespace MicroServices.Services
         public async Task<PatientMongo?> GetAsync(string id) =>
             await _patientsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
+        public async Task<List<PatientMongo>> GetPatientByPatIdAsync(int patId) =>
+            await _patientsCollection.Find(Builders<PatientMongo>.Filter.Eq(p => p.PatId, patId)).ToListAsync();
+        
         public async Task CreateAsync(PatientMongo newPatient) =>
             await _patientsCollection.InsertOneAsync(newPatient);
 
