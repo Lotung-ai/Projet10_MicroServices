@@ -5,8 +5,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5000 // Port exposé par le microservice 
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients",
@@ -17,8 +17,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5000 // Port exposé par le microservice 
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients/{id}",
@@ -29,8 +29,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5000 // Port exposé par le microservice 
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients/search",
@@ -41,8 +41,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5000 // Port exposé par le microservice 
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/notemongo",
@@ -53,8 +53,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5000
+          "Host": "microservices",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/notemongo/byid/{id:length(24)}",
@@ -65,8 +65,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5000
+          "Host": "microservices",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/notemongo/bypatid/{patId}",
@@ -74,6 +74,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:5003" // URL de base pour Ocelot  // Le port de Ocelot API Gateway. Ocelot http://localhost:5003/api/patients vers http://localhost:5000/Patient.
+    "BaseUrl": "" // URL de base pour Ocelot  // Le port de Ocelot API Gateway. Ocelot http://localhost:5003/api/patients vers http://localhost:5000/Patient.
   }
 }

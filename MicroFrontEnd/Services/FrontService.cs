@@ -11,8 +11,8 @@ namespace MicroFrontEnd.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<FrontService> _logger;
-        private readonly string _apiUrlSQL = "http://localhost:5003/gateway/patients";
-        private readonly string _apiUrlMongo = "http://localhost:5003/gateway/notemongo";
+        private readonly string _apiUrlSQL = "http://ocelotapigw:80/gateway/patients";
+        private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
 
         public FrontService(IHttpClientFactory httpClientFactory, ILogger<FrontService> logger)
         {

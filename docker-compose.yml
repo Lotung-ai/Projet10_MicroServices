@@ -8,8 +8,8 @@ services:
       dockerfile: MicroFrontEnd/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - MicroServicesUrl=http://microservices:5000
-      - OcelotAPIGwUrl=http://ocelotapigw:5003
+      - MicroServicesUrl=http://microservices:80
+      - OcelotAPIGwUrl=http://ocelotapigw:80
     ports:
       - "5211:80"
     depends_on:
@@ -25,13 +25,14 @@ services:
       dockerfile: MicroServices/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
       - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
       - MongoDbSettings__DatabaseName=PatientDb
     ports:
       - "5000:80"
     depends_on:
       - sqlserver
+      - mongodb
     networks:
       - app-network
 
@@ -59,6 +60,14 @@ services:
       - app-network
     volumes:
       - sqlserver-data:/var/opt/mssql
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
 
 networks:
   app-network:

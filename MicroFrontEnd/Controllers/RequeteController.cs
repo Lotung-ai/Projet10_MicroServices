@@ -19,8 +19,8 @@ namespace MicroFrontEnd.Controllers
         private readonly ILogger<RequeteController> _logger;
         private readonly IFrontService _frontService;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrlSQL = "http://localhost:5003/gateway/patients";
-        private readonly string _apiUrlMongo = "http://localhost:5003/gateway/notemongo";
+        private readonly string _apiUrlSQL = "http://ocelotapigw:80/gateway/patients";
+        private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
 
         public RequeteController(IHttpClientFactory httpClientFactory, ILogger<RequeteController> logger, IFrontService frontservice)
         {
