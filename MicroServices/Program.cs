@@ -16,7 +16,7 @@ builder.Services.AddDbContext<PatientDbContext>(options =>
 builder.Services.Configure<PatientDbSettings>(
     builder.Configuration.GetSection("PatientDatabase"));
 
-builder.Services.AddSingleton<PatientMongoService>();
+builder.Services.AddSingleton<NoteService>();
 
 builder.Services.AddControllers();
  

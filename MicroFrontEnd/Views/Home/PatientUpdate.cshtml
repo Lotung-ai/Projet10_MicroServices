@@ -22,7 +22,8 @@
 }
 
 <!-- Formulaire pour mettre à jour le patient et les notes -->
-<form asp-controller="Requete" asp-action="UpdatePatientDataAsync" method="put">
+<form asp-controller="Requete" asp-action="UpdatePatientNoteData" method="post">
+
     <input type="hidden" asp-for="Patient.Id" />
 
     <!-- Champs pour les informations du patient -->
@@ -53,32 +54,36 @@
     <div class="form-group">
         <label asp-for="Patient.Address" class="control-label"></label>
         <input asp-for="Patient.Address" class="form-control" />
-        <span asp-validation-for="Patient.Address" class="text-danger"></span>
+
     </div>
 
     <div class="form-group">
         <label asp-for="Patient.PhoneNumber" class="control-label"></label>
         <input asp-for="Patient.PhoneNumber" class="form-control" />
-        <span asp-validation-for="Patient.PhoneNumber" class="text-danger"></span>
+
     </div>
 
     <!-- Champs pour modifier les notes -->
     <h3>Notes</h3>
-    <ul class="list-group">
-        @for (int i = 0; i < Model.Notes.Count; i++)
-        {
-            <li class="list-group-item">
-                <input type="hidden" asp-for="Notes[i].Id" />
-                <input type="hidden" asp-for="Notes[i].PatId" />
+   
+    @if (Model.Notes != null && Model.Notes.Any())
+    {            
+                for (int i = 0; i < Model.Notes.Count; i++)
+                {
+                    <div class="form-group">
+                        <input type="hidden" asp-for="Notes[i].Id" />
+                        <input type="hidden" asp-for="Notes[i].PatId" />
+                        <input type="hidden" asp-for="Notes[i].Patient" />
 
-                <div class="form-group">
-                    <label asp-for="Notes[i].Note">Note @i:</label>
-                    <textarea asp-for="Notes[i].Note" class="form-control"></textarea>
-                    <span asp-validation-for="Notes[i].Note" class="text-danger"></span>
-                </div>
-            </li>
-        }
-    </ul>
+                        <label asp-for="Notes[i].Note">Note @i:</label>
+                        <textarea asp-for="Notes[i].Note" class="form-control"></textarea>
+                    </div>
+                }       
+    }   
+    else
+    {
+    <p>No patient data available.</p>
+    }
 
     <!-- Bouton pour soumettre toutes les informations mises à jour -->
     <button type="submit" class="btn btn-primary mt-3">Update Patient and Notes</button>

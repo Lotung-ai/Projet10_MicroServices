@@ -5,8 +5,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "localhost",
+          "Port": 5000 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients",
@@ -17,8 +17,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "localhost",
+          "Port": 5000 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients/{id}",
@@ -29,51 +29,51 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "localhost",
+          "Port": 5000 // Port exposé par le microservice 
         }
       ],
       "UpstreamPathTemplate": "/gateway/patients/search",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/PatientMongo",
+      "DownstreamPathTemplate": "/api/Note",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "localhost",
+          "Port": 5000 // Port exposé par le microservice 
         }
       ],
-      "UpstreamPathTemplate": "/gateway/patientsmongo",
+      "UpstreamPathTemplate": "/gateway/notemongo",
       "UpstreamHttpMethod": [ "POST", "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/PatientMongo/{id:length(24)}",
+      "DownstreamPathTemplate": "/api/Note/{id:length(24)}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80
+          "Host": "localhost",
+          "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/gateway/patientsmongo/byid/{id:length(24)}",
+      "UpstreamPathTemplate": "/gateway/notemongo/byid/{id:length(24)}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/api/PatientMongo/{patId}",
+      "DownstreamPathTemplate": "/api/Note/{patId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80
+          "Host": "localhost",
+          "Port": 5000
         }
       ],
-      "UpstreamPathTemplate": "/gateway/patientsmongo/bypatid/{patId}",
+      "UpstreamPathTemplate": "/gateway/notemongo/bypatid/{patId}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://ocelotapigw:80" // URL de base pour Ocelot  // Le port de Ocelot API Gateway. Ocelot http://localhost:5003/api/patients vers http://localhost:5000/Patient.
+    "BaseUrl": "http://localhost:5003" // URL de base pour Ocelot  // Le port de Ocelot API Gateway. Ocelot http://localhost:5003/api/patients vers http://localhost:5000/Patient.
   }
 }

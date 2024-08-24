@@ -20,7 +20,7 @@ namespace MicroServices.Controllers
             _patientService = PatientRepository;
         }
 
-        // 1.1: Impl�mentez l'API RESTFUL pour cr�er une entit� Patient dans le DataRepository
+        // Impl�mentez l'API RESTFUL pour cr�er une entit� Patient dans le DataRepository
         [HttpPost]
         public async Task<IActionResult> CreatePatient([FromBody] Patient Patient)
         {        
@@ -36,7 +36,7 @@ namespace MicroServices.Controllers
             }
         }
 
-        // 1.2: Impl�mentez l'API RESTFUL pour r�cup�rer une entit� Patient
+        // Impl�mentez l'API RESTFUL pour r�cup�rer une entit� Patient
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPatientById(int id)
         {
@@ -60,7 +60,7 @@ namespace MicroServices.Controllers
 
             return Ok(patient);
         }
-        // 1.3: Impl�mentez l'API RESTFUL pour modifier une entit� Patient
+        // Impl�mentez l'API RESTFUL pour modifier une entit� Patient
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] Patient Patient)
         {
@@ -95,7 +95,7 @@ namespace MicroServices.Controllers
             }
         }
 
-        // 1.4: Impl�mentez l'API RESTFUL pour supprimer une entit� Patient
+        // Impl�mentez l'API RESTFUL pour supprimer une entit� Patient
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> DeletePatient(int id)

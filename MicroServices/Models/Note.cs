@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 namespace MicroServices.Models
 {
-    public class PatientMongo
+    public class Note
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -13,7 +13,7 @@ namespace MicroServices.Models
         [BsonElement("patient")]
         public string Patient { get; set; } = string.Empty;
         [BsonElement("note")]
-        public string Note { get; set; } = string.Empty;
+        public string NoteText { get; set; } = string.Empty;
 
     }
 }

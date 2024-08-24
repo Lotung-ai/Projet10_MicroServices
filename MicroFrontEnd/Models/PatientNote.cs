@@ -6,12 +6,12 @@ namespace MicroFrontEnd.Models
         public PatientViewModel Patient { get; set; }
 
         // Liste des notes du patient (MongoDB)
-        public NoteViewModel Note { get; set; }
+        public NoteViewModel NoteText { get; set; }
 
         public PatientNote()
         {
             Patient = new PatientViewModel();
-            Note = new NoteViewModel();
+            NoteText = new NoteViewModel();
         }
     }
 }
