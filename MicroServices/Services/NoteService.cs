@@ -1,4 +1,5 @@
-﻿using MicroServices.Models;
+﻿using MicroServices.Data;
+using MicroServices.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 

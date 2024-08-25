@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using MicroServices.Services;
 using MicroServices.Services.Interfaces;
 using MicroServices.Data;
-using MicroServices.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
