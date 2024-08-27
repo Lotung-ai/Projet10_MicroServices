@@ -15,5 +15,6 @@ namespace MicroFrontEnd.Services.Interfaces
         public Task<List<Note>> GetPatientMongoDataAsync(int patientId);
         public Task UpdatePatientData(PatientViewModel updatedPatientViewModel);
         public Task UpdateNoteData(NoteViewModel updatedNoteViewModel);
+        public Task<string> CalculateAssessmentDiabetePatient(int patientId);
     }
 }

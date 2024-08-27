@@ -35,6 +35,7 @@ namespace MicroFrontEnd.Controllers
         {
             try
             {
+                var patientNoteViewModels = new List<PatientNoteViewModel>();
                 var SqlResponse = await _httpClient.GetAsync(_apiUrlSQL);
 
                 if (SqlResponse.IsSuccessStatusCode)
@@ -42,18 +43,25 @@ namespace MicroFrontEnd.Controllers
                     var json = await SqlResponse.Content.ReadAsStringAsync();
                     var sqlPatients = JsonSerializer.Deserialize<List<Patient>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    return View("/Views/Home/PatientManagement.cshtml", sqlPatients); // Assurez-vous que le nom de la vue est correct
+                    foreach (Patient patient in sqlPatients)
+                    {
+                        var patientNoteViewModel = new PatientNoteViewModel();
+                        patientNoteViewModel.Patient = _frontService.MaPatientApiToPatientViewModel(patient);
+                        patientNoteViewModel.RiskDiabete = await _frontService.CalculateAssessmentDiabetePatient(patient.Id);
+                        patientNoteViewModels.Add(patientNoteViewModel);
+                    }
+                        return View("/Views/Home/PatientManagement.cshtml", patientNoteViewModels); // Assurez-vous que le nom de la vue est correct
                 }
                 else
                 {
                     _logger.LogError("Unable to retrieve sqlPatients from API.");
-                    return View("/Views/Home/PatientManagement.cshtml", new List<Patient>()); // Retourne une vue avec une liste vide
+                    return View("/Views/Home/PatientManagement.cshtml", new List<PatientNoteViewModel>()); // Retourne une vue avec une liste vide
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving sqlPatients.");
-                return View("/Views/Home/PatientManagement.cshtml", new List<Patient>()); // Retourne une vue avec une liste vide
+                return View("/Views/Home/PatientManagement.cshtml", new List<PatientNoteViewModel>()); // Retourne une vue avec une liste vide
             }
 
         }

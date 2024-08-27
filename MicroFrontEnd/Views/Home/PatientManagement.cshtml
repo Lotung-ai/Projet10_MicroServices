@@ -1,4 +1,4 @@
-﻿@model List<MicroServices.Models.Patient>
+﻿@model List<MicroFrontEnd.Models.PatientNoteViewModel>
 
 <h2>List of Patients</h2>
 
@@ -17,25 +17,26 @@ else
                 <th>Gender</th>
                 <th>Address</th>
                 <th>Phone Number</th>
+                <th>Risk of Diabetes</th>
                 <th>Actions</th>
             </tr>
         </thead>
-
 
         <tbody>
             @foreach (var patient in Model)
             {
                 <tr>
-                    <td>@patient.FirstName</td>
-                    <td>@patient.LastName</td>
-                    <td>@patient.DateOfBirth.ToShortDateString()</td>
-                    <td>@patient.Gender</td>
-                    <td>@patient.Address</td>
-                    <td>@patient.PhoneNumber</td>
+                    <td>@patient.Patient.FirstName</td>
+                    <td>@patient.Patient.LastName</td>
+                    <td>@patient.Patient.DateOfBirth.ToShortDateString()</td>
+                    <td>@patient.Patient.Gender</td>
+                    <td>@patient.Patient.Address</td>
+                    <td>@patient.Patient.PhoneNumber</td>
+                    <td>@patient.RiskDiabete</td>
                     <td>
-                        <a asp-controller="Requete" asp-action="GetPatientDetails" asp-route-patientId="@patient.Id">Details</a> |
-                        <a asp-controller="Requete" asp-action="GetPatientUpdate" asp-route-patientId="@patient.Id">Edit</a> |
-                        <a asp-controller="Requete" asp-action="DeletePatient" asp-route-patientId="@patient.Id">Delete</a>
+                        <a asp-controller="Requete" asp-action="GetPatientDetails" asp-route-patientId="@patient.Patient.Id">Details</a> |
+                        <a asp-controller="Requete" asp-action="GetPatientUpdate" asp-route-patientId="@patient.Patient.Id">Edit</a> |
+                        <a asp-controller="Requete" asp-action="DeletePatient" asp-route-patientId="@patient.Patient.Id">Delete</a>
                     </td>
                 </tr>
             }
