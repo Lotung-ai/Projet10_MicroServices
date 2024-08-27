@@ -1,11 +1,12 @@
 ﻿using MicroServices.Data;
 using MicroServices.Models;
+using MicroServices.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace MicroServices.Services
 {
-    public class NoteService
+    public class NoteService: INoteService
     {
         private readonly IMongoCollection<Note> _patientsCollection;
 
