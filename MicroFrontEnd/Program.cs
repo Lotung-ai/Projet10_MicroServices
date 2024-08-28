@@ -17,19 +17,9 @@ builder.Services.AddScoped<IFrontService, FrontService>();
 //     options.FormFieldName = "YourAntiforgeryFormFieldName";
 //     // Configurez d'autres options si nécessaire
 // });
-// Add CORS policy to allow all origins (you can restrict this as needed)
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-});
+
 var app = builder.Build();
-// Use CORS policy
-app.UseCors("CorsPolicy");
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
