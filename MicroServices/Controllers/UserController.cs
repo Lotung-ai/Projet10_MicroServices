@@ -8,6 +8,7 @@ namespace MicroServices.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userRepository;
@@ -48,7 +49,6 @@ namespace MicroServices.Controllers
                 UserName = register.UserName,
                 Email = register.Email,
                 Fullname = register.Fullname,
-                Role = register.Role
             };
 
             // Créer l'utilisateur avec un mot de passe
@@ -66,7 +66,6 @@ namespace MicroServices.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
@@ -81,7 +80,6 @@ namespace MicroServices.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userRepository.GetAllUsersAsync();
@@ -90,7 +88,6 @@ namespace MicroServices.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] Register register)
         {
             if (id <= 0 || register == null)
@@ -142,8 +139,7 @@ namespace MicroServices.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]        
         public async Task<IActionResult> DeleteUser(int id)
         {
             try

@@ -43,6 +43,7 @@ namespace MicroFrontEnd.Services
 
             return patient;
         }
+
         public PatientViewModel MaPatientApiToPatientViewModel(Patient patient)
         {
             var patientViewModel = new PatientViewModel();

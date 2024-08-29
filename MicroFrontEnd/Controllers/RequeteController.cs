@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Expressions;
 using MicroFrontEnd.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicroFrontEnd.Controllers
 {
@@ -66,7 +67,7 @@ namespace MicroFrontEnd.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost]        
         public async Task<IActionResult> PostPatientNoteCreate(PatientNote patientNote)
         {
             try
@@ -87,7 +88,7 @@ namespace MicroFrontEnd.Controllers
             return View("/Views/Home/PatientCreate.cshtml", patientNote);
         }
 
-        [HttpGet]
+        [HttpGet]        
         public async Task<IActionResult> GetPatientDetails(int patientId)
         {
             if (patientId <= 0)
@@ -108,7 +109,7 @@ namespace MicroFrontEnd.Controllers
         }
 
         // Méthode GET pour mettre à jour un sqlPatient
-        [HttpGet]
+        [HttpGet]        
         public async Task<IActionResult> GetPatientUpdate(int patientId)
         {
             if (patientId <= 0)
@@ -129,7 +130,7 @@ namespace MicroFrontEnd.Controllers
         }
 
         // Méthode POST pour mettre à jour les notes
-        [HttpPut]
+        [HttpPut]       
         private async Task<bool> UpdateNotesAsync(NoteViewModel note)
         {
             bool allUpdatesSuccessful = true;
@@ -164,7 +165,7 @@ namespace MicroFrontEnd.Controllers
 
         //TODO Utiliser un Get et un Post
         [HttpPost]
-        public async Task<IActionResult> UpdatePatientNoteData(PatientNoteViewModel updatedPatientNoteViewModel)
+         public async Task<IActionResult> UpdatePatientNoteData(PatientNoteViewModel updatedPatientNoteViewModel)
         {
             try
             {
@@ -208,7 +209,7 @@ namespace MicroFrontEnd.Controllers
             return View("/Views/Home/PatientUpdate.cshtml", updatedPatientNoteViewModel);
         }
 
-        // Méthode DELETE pour supprimer un sqlPatient
+        // Méthode DELETE pour supprimer un sqlPatient        
         public async Task<IActionResult> DeletePatient(int patientId)
         {
             if (patientId <= 0)

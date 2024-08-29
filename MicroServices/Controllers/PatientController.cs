@@ -10,6 +10,7 @@ namespace MicroServices.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [Authorize]
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;

@@ -1,6 +1,30 @@
 ﻿{
   "Routes": [
     {
+      "DownstreamPathTemplate": "/api/Login/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Login/logout",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/logout",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/Patient",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

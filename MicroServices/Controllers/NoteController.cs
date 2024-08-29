@@ -1,11 +1,13 @@
 ﻿using MicroServices.Models;
 using MicroServices.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroServices.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class NoteController : ControllerBase
     {
         private readonly NoteService _patientService;

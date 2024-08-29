@@ -1,6 +1,7 @@
 using MicroFrontEnd.Controllers;
 using MicroFrontEnd.Services.Interfaces;
 using MicroFrontEnd.Services;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,14 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IFrontService, FrontService>();
-// Optionnel : Configuration de la protection contre les attaques CSRF (Antiforgery)
-// Si vous avez besoin de configurer des options spécifiques
-// builder.Services.AddAntiforgery(options =>
-// {
-//     options.Cookie.Name = "YourAntiforgeryCookieName";
-//     options.FormFieldName = "YourAntiforgeryFormFieldName";
-//     // Configurez d'autres options si nécessaire
-// });
+
 
 var app = builder.Build();
 
