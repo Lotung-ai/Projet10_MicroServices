@@ -8,7 +8,6 @@ namespace MicroServices.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userRepository;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MicroServices.Migrations
 {
     [DbContext(typeof(PatientDbContext))]
-    [Migration("20240827220537_MaJUserDb")]
-    partial class MaJUserDb
+    [Migration("20240829203453_InitSqlDb")]
+    partial class InitSqlDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
