@@ -2,6 +2,12 @@
 
 <h2>List of Patients</h2>
 
+@if (ViewData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @ViewData["SuccessMessage"]
+    </div>
+}
 @if (Model == null || !Model.Any())
 {
     <p>No patients found.</p>

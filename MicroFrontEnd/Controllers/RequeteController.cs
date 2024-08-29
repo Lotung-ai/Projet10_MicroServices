@@ -77,17 +77,18 @@ namespace MicroFrontEnd.Controllers
                 //Post Mongo data note
                  await _frontService.PostNoteCreate(patientNote);
                 ViewData["SuccessMessage"] = "Patient and notes created successfully.";
-                return RedirectToAction("PatientManagement", "Requete");
+                return RedirectToAction("PatientManagement");
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while creating Patient.");
                 ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
-                return View("/View/Requete/PatientCreate.cshtml", patientNote);
-
+                ViewData["ErrorMessage"] = "Patient and notes created failed.";
+                return View("/Views/Home/PatientCreate.cshtml", patientNote);
             }
-            
-            return View("/Views/Home/PatientCreate.cshtml", patientNote);
+
+
         }
 
         [HttpGet]        
@@ -167,7 +168,7 @@ namespace MicroFrontEnd.Controllers
 
         //TODO Utiliser un Get et un Post
         [HttpPost]
-         public async Task<IActionResult> UpdatePatientNoteData(PatientNoteViewModel updatedPatientNoteViewModel)
+         public async Task<IActionResult> UpdatePatientNoteData(PatientNoteViewModel updatedPatientNoteViewModel, string NewNote)
         {
             try
             {
@@ -190,6 +191,17 @@ namespace MicroFrontEnd.Controllers
                         await _frontService.UpdateNoteData(note);
                     }
                     _logger.LogInformation("Successfully updates notes");
+
+                    // Si une nouvelle note est fournie, créez-la
+                    if (!string.IsNullOrEmpty(NewNote))
+                    {
+                        var newPatientNote = new PatientNote
+                        {
+                            Patient = updatedPatientNoteViewModel.Patient,
+                            NoteText = new NoteViewModel { Note = NewNote }
+                        };
+                        await _frontService.PostNoteCreate(newPatientNote);
+                    }
                 }
                 catch
                 {
@@ -200,6 +212,7 @@ namespace MicroFrontEnd.Controllers
 
                 _logger.LogInformation("Successfully updated patient and notes.");
                 ViewData["SuccessMessage"] = "Patient and notes updated successfully.";
+
             }
 
             catch (Exception ex)
