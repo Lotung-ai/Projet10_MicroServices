@@ -83,6 +83,8 @@ namespace MicroFrontEnd.Controllers
             {
                 _logger.LogError(ex, "Error occurred while creating Patient.");
                 ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+                return View("/View/Requete/PatientCreate.cshtml", patientNote);
+
             }
             
             return View("/Views/Home/PatientCreate.cshtml", patientNote);
