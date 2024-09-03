@@ -9,11 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IFrontService, FrontService>();
 
+
+builder.Services.AddScoped<IFrontService, FrontService>();
 
 var app = builder.Build();
 
+// Middleware personnalisé pour supprimer les cookies au démarrage
+/*app.Use(async (context, next) =>
+{
+    if (context.Request.Cookies.ContainsKey("jwt"))
+    {
+        context.Response.Cookies.Delete("jwt");
+    }
+
+    await next();
+});*/
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -70,12 +70,20 @@ namespace MicroFrontEnd.Controllers
         [HttpPost]        
         public async Task<IActionResult> PostPatientNoteCreate(PatientNote patientNote)
         {
+            // Vérifiez si le modèle est valide en utilisant ModelState.IsValid
+            if (!ModelState.IsValid)
+            {
+                // Si le modèle n'est pas valide, retournez la vue avec les erreurs de validation
+                return View("/Views/Home/PatientCreate.cshtml", patientNote);
+            }
+
             try
             {
                 //Post SQL data patient
                  await _frontService.PostPatientCreate(patientNote.Patient);
                 //Post Mongo data note
                  await _frontService.PostNoteCreate(patientNote);
+                _logger.LogInformation("Patient and notes created successfully.");
                 ViewData["SuccessMessage"] = "Patient and notes created successfully.";
                 return RedirectToAction("PatientManagement");
 
@@ -87,8 +95,6 @@ namespace MicroFrontEnd.Controllers
                 ViewData["ErrorMessage"] = "Patient and notes created failed.";
                 return View("/Views/Home/PatientCreate.cshtml", patientNote);
             }
-
-
         }
 
         [HttpGet]        

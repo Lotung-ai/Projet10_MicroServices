@@ -15,11 +15,10 @@ namespace MicroServices.Controllers
         private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userRepository, UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager, ILogger<UserController> logger)
+        public UserController(IUserService userRepository, UserManager<User> userManager, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
             _userManager = userManager;
-            _roleManager = roleManager;
             _logger = logger;
         }
 
@@ -30,17 +29,6 @@ namespace MicroServices.Controllers
             {
                 _logger.LogWarning("Invalid registration attempt: {Errors}", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return BadRequest(ModelState);
-            }
-
-            // Vérifier si le rôle existe, sinon le créer
-            if (!await _roleManager.RoleExistsAsync(register.Role))
-            {
-                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole<int> { Name = register.Role });
-                if (!createRoleResult.Succeeded)
-                {
-                    _logger.LogError("Failed to create role: {Role}", register.Role);
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Unable to create role.");
-                }
             }
 
             var user = new User
@@ -54,7 +42,6 @@ namespace MicroServices.Controllers
             var result = await _userManager.CreateAsync(user, register.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, register.Role);
                 _logger.LogInformation("User registered successfully: {UserId}", user.Id);
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
             }
@@ -107,18 +94,6 @@ namespace MicroServices.Controllers
                 user.UserName = register.UserName;
                 user.Email = register.Email;
                 user.Fullname = register.Fullname;
-
-                // Gérer le changement de rôle
-                if (user.Role != register.Role)
-                {
-                    await _userManager.RemoveFromRoleAsync(user, user.Role);
-                    if (!await _roleManager.RoleExistsAsync(register.Role))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole<int> { Name = register.Role });
-                    }
-                    await _userManager.AddToRoleAsync(user, register.Role);
-                    user.Role = register.Role;
-                }
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
