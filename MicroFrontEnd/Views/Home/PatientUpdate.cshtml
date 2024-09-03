@@ -1,0 +1,96 @@
+﻿@model PatientNoteViewModel
+
+@{
+    ViewData["Title"] = "Update Patient";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Affichage des messages de succès ou d'erreur -->
+@if (ViewData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @ViewData["SuccessMessage"]
+    </div>
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<!-- Formulaire pour mettre à jour le patient et les notes -->
+<form asp-controller="Requete" asp-action="UpdatePatientNoteData" method="post">
+
+    <input type="hidden" asp-for="Patient.Id" />
+
+    <!-- Champs pour les informations du patient -->
+    <div class="form-group">
+        <label asp-for="Patient.FirstName" class="control-label"></label>
+        <input asp-for="Patient.FirstName" class="form-control" />
+        <span asp-validation-for="Patient.FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Patient.LastName" class="control-label"></label>
+        <input asp-for="Patient.LastName" class="form-control" />
+        <span asp-validation-for="Patient.LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Patient.DateOfBirth" class="control-label"></label>
+        <input asp-for="Patient.DateOfBirth" class="form-control" type="date" />
+        <span asp-validation-for="Patient.DateOfBirth" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Patient.Gender" class="control-label"></label>
+        <input asp-for="Patient.Gender" class="form-control" />
+        <span asp-validation-for="Patient.Gender" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Patient.Address" class="control-label"></label>
+        <input asp-for="Patient.Address" class="form-control" />
+
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Patient.PhoneNumber" class="control-label"></label>
+        <input asp-for="Patient.PhoneNumber" class="form-control" />
+
+    </div>
+
+    <!-- Champs pour modifier les notes -->
+    <h3>Notes</h3>
+   
+    @if (Model.Notes != null && Model.Notes.Any())
+    {            
+                for (int i = 0; i < Model.Notes.Count; i++)
+                {
+                    <div class="form-group">
+                        <input type="hidden" asp-for="Notes[i].Id" />
+                        <input type="hidden" asp-for="Notes[i].PatId" />
+                        <input type="hidden" asp-for="Notes[i].Patient" />
+
+                        <label asp-for="Notes[i].Note">Note @i:</label>
+                        <textarea asp-for="Notes[i].Note" class="form-control"></textarea>
+                    </div>
+                }       
+    }   
+    else
+    {
+    <p>No patient data available.</p>
+    }
+    <!-- Nouveau champ pour ajouter une nouvelle note -->
+    <h3>Add New Note</h3>
+    <div class="form-group">
+        <label for="NewNote">New Note:</label>
+        <textarea id="NewNote" name="NewNote" class="form-control"></textarea>
+    </div>
+
+    <!-- Bouton pour soumettre toutes les informations mises à jour -->
+    <button type="submit" class="btn btn-primary mt-3">Update Patient and Notes</button>
+</form>

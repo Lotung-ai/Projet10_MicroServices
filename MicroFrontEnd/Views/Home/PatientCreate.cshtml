@@ -1,0 +1,63 @@
+﻿@model PatientNote
+@{
+    ViewData["Title"] = "Create Patient";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (ViewData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @ViewData["SuccessMessage"]
+    </div>
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<form asp-controller="Requete" asp-action="PostPatientNoteCreate" method="post">
+    <div class="form-group">
+        <label asp-for="Patient.FirstName" class="control-label"></label>
+        <input asp-for="Patient.FirstName" class="form-control" />
+        <span asp-validation-for="Patient.FirstName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Patient.LastName" class="control-label"></label>
+        <input asp-for="Patient.LastName" class="form-control" />
+        <span asp-validation-for="Patient.LastName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Patient.DateOfBirth" class="control-label"></label>
+        <input asp-for="Patient.DateOfBirth" class="form-control" type="date" />
+        <span asp-validation-for="Patient.DateOfBirth" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Patient.Gender" class="control-label"></label>
+        <input asp-for="Patient.Gender" class="form-control" />
+        <span asp-validation-for="Patient.Gender" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Patient.Address" class="control-label"></label>
+        <input asp-for="Patient.Address" class="form-control" />
+
+    </div>
+    <div class="form-group">
+        <label asp-for="Patient.PhoneNumber" class="control-label"></label>
+        <input asp-for="Patient.PhoneNumber" class="form-control" />
+
+    </div>
+    <!-- Champs pour les notes -->
+    <h3>Notes</h3>
+    <div id="notes-container">
+        <div class="form-group">
+            <label asp-for="NoteText.Note" class="control-label">Note 1</label>
+            <textarea asp-for="NoteText.Note" class="form-control"></textarea>
+
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

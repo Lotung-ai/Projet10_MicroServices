@@ -1,0 +1,103 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Login/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Login/logout",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/logout",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Patient",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/patients",
+      "UpstreamHttpMethod": [ "POST", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Patient/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/patients/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Patient/search?firstName={firstName}&lastName={lastName}&dateOfBirth={dateOfBirth}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/patients/search",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Note",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80 // Port exposé par le microservice 
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/notemongo",
+      "UpstreamHttpMethod": [ "POST", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Note/{id:length(24)}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/notemongo/byid/{id:length(24)}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Note/{patId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservices",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/notemongo/bypatid/{patId}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "" // URL de base pour Ocelot  // Le port de Ocelot API Gateway. Ocelot http://localhost:5003/api/patients vers http://localhost:5000/Patient.
+  }
+}

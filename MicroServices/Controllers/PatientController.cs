@@ -1,23 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MicroServices.Services.Interfaces;
 using MicroServices.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using MicroServices.Data;
+
 
 namespace MicroServices.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
+    [Authorize]
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
+        private readonly PatientDbContext _context;
 
         public PatientController(IPatientService PatientRepository, ILogger<PatientController> logger)
         {
             _patientService = PatientRepository;
         }
 
-        // 1.1: Impl�mentez l'API RESTFUL pour cr�er une entit� Patient dans le DataRepository
+        // Impl�mentez l'API RESTFUL pour cr�er une entit� Patient dans le DataRepository
         [HttpPost]
-
         public async Task<IActionResult> CreatePatient([FromBody] Patient Patient)
         {        
             try
@@ -32,9 +37,8 @@ namespace MicroServices.Controllers
             }
         }
 
-        // 1.2: Impl�mentez l'API RESTFUL pour r�cup�rer une entit� Patient
+        // Impl�mentez l'API RESTFUL pour r�cup�rer une entit� Patient
         [HttpGet("{id}")]
-
         public async Task<IActionResult> GetPatientById(int id)
         {
             try
@@ -50,9 +54,15 @@ namespace MicroServices.Controllers
             }
         }
 
-        // 1.3: Impl�mentez l'API RESTFUL pour modifier une entit� Patient
-        [HttpPut("{id}")]
+        [HttpGet("search")]
+        public async Task<IActionResult> GetPatientByNameDob(string firstName, string lastName, DateTime dateOfBirth)
+        {
+            var patient = await _patientService.GetPatientByNameDob(firstName, lastName, dateOfBirth);
 
+            return Ok(patient);
+        }
+        // Impl�mentez l'API RESTFUL pour modifier une entit� Patient
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] Patient Patient)
         {
             if (Patient == null || Patient.Id != id)
@@ -86,7 +96,7 @@ namespace MicroServices.Controllers
             }
         }
 
-        // 1.4: Impl�mentez l'API RESTFUL pour supprimer une entit� Patient
+        // Impl�mentez l'API RESTFUL pour supprimer une entit� Patient
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> DeletePatient(int id)
@@ -102,6 +112,24 @@ namespace MicroServices.Controllers
             {
 
                 return StatusCode(500, "An error occurred while deleting a Patient");
+            }
+        }
+        // Récupération de tous les Patient
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            try
+            {
+                var Patients = await _patientService.GetAllPatientsAsync();
+                if (Patients == null || !Patients.Any())
+                {
+                    return NotFound();
+                }
+                return Ok(Patients);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while retrieving all Patients");
             }
         }
     }

@@ -1,0 +1,60 @@
+﻿@model PatientNoteViewModel
+@{
+    ViewData["Title"] = "Get Patient";
+}
+<h1>Patient Details</h1>
+
+<form asp-controller="Requete" asp-action="GetPatientDetails" method="get">
+    <label for="patientId">Enter Patient ID:</label>
+    <input type="number" id="patientId" name="patientId" required />
+    <button type="submit">Get Patient</button>
+</form>
+
+@if (Model != null)
+{
+    <h2>Patient Data</h2>
+    <dl>
+        <dt>ID</dt>
+        <dd>@Model.Patient.Id</dd>
+
+        <dt>First Name</dt>
+        <dd>@Model.Patient.FirstName</dd>
+
+        <dt>Last Name</dt>
+        <dd>@Model.Patient.LastName</dd>
+
+        <dt>Date of Birth</dt>
+        <dd>@Model.Patient.DateOfBirth.ToShortDateString()</dd>
+
+        <dt>Gender</dt>
+        <dd>@Model.Patient.Gender</dd>
+
+        <dt>Address</dt>
+        <dd>@Model.Patient.Address</dd>
+
+        <dt>Phone Number</dt>
+        <dd>@Model.Patient.PhoneNumber</dd>
+    </dl>
+
+    <h3>Notes</h3>
+    @if (Model.Notes != null && Model.Notes.Any())
+    {
+        <ul>
+            @foreach (var note in Model.Notes)
+            {
+                <li>
+                    <strong>Note:</strong> @note.Note
+                </li>
+            }
+        </ul>
+    }
+}
+else
+{
+    <p>No patient data available.</p>
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <p class="text-danger">@ViewData["ErrorMessage"]</p>
+}
