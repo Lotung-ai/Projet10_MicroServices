@@ -33,20 +33,16 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        @if ( !string.IsNullOrEmpty(Context.Request.Cookies["jwt"]))
-                        {
-                            <li class="nav-item">
-                                <form method="post" asp-controller="Account" asp-action="Logout">
-                                    <button type="submit" class="btn btn-link nav-link">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="/account/login">Login</a>
-                            </li>
-                        }
+
+                        <li class="nav-item">
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                <button type="submit" class="btn btn-link nav-link">Logout</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/account/login">Login</a>
+                        </li>
+
                     </ul>
                 </div>
             </div>

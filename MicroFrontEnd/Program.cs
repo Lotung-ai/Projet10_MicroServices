@@ -2,6 +2,7 @@ using MicroFrontEnd.Controllers;
 using MicroFrontEnd.Services.Interfaces;
 using MicroFrontEnd.Services;
 using Microsoft.AspNetCore.DataProtection;
+using Ocelot.Values;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
-
 
 builder.Services.AddScoped<IFrontService, FrontService>();
 
@@ -35,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

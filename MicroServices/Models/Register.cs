@@ -18,6 +18,7 @@ namespace MicroServices.Models
 
         [Required(ErrorMessage = "Fullname is required")]
         public string Fullname { get; set; }
+        public string Role { get; set; }
 
     }
 }
