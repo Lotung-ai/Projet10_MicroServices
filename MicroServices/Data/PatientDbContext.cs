@@ -1,11 +1,8 @@
-﻿using DnsClient;
-using MicroServices.Models;
+﻿using MicroServices.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
+
 
 namespace MicroServices.Data
 {

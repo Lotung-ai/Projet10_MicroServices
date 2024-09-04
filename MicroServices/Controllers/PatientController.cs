@@ -8,9 +8,9 @@ using MicroServices.Data;
 
 namespace MicroServices.Controllers
 {
-    [ApiController]
-    [Route("/api/[controller]")]
     [Authorize]
+    [ApiController]
+    [Route("/api/[controller]")]    
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;

@@ -3,15 +3,8 @@ using System.Text.Json;
 using System.Text;
 using MicroServices.Models;
 using MicroFrontEnd.Models;
-using MicroFrontEnd.Services;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Expressions;
 using MicroFrontEnd.Services.Interfaces;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.Update;
-using Microsoft.AspNetCore.Authorization;
+using System.Net.Http.Headers;
 
 namespace MicroFrontEnd.Controllers
 {
@@ -36,6 +29,7 @@ namespace MicroFrontEnd.Controllers
         {
             try
             {
+
                 var patientNoteViewModels = new List<PatientNoteViewModel>();
                 var SqlResponse = await _httpClient.GetAsync(_apiUrlSQL);
 
@@ -70,12 +64,6 @@ namespace MicroFrontEnd.Controllers
         [HttpPost]        
         public async Task<IActionResult> PostPatientNoteCreate(PatientNote patientNote)
         {
-            // Vérifiez si le modèle est valide en utilisant ModelState.IsValid
-            if (!ModelState.IsValid)
-            {
-                // Si le modèle n'est pas valide, retournez la vue avec les erreurs de validation
-                return View("/Views/Home/PatientCreate.cshtml", patientNote);
-            }
 
             try
             {

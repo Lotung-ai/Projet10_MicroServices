@@ -60,9 +60,9 @@ namespace MicroFrontEnd.Controllers
                     // Stocker le jeton dans les cookies
                     Response.Cookies.Append("jwt", model.JwtToken, new CookieOptions
                     {
-                        HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict
+                        HttpOnly = true,                       
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTime.UtcNow.AddHours(2)
                     });
                     ViewData["LoginMessage"] = "Login Success";
                     return View("/Views/Home/Index.cshtml");

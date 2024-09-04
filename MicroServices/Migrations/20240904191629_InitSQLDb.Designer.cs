@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MicroServices.Migrations
 {
     [DbContext(typeof(PatientDbContext))]
-    [Migration("20240831085151_InitDbSQL")]
-    partial class InitDbSQL
+    [Migration("20240904191629_InitSQLDb")]
+    partial class InitSQLDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,6 +106,10 @@ namespace MicroServices.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

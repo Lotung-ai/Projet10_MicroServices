@@ -7,18 +7,19 @@ using MicroServices.Services.Interfaces;
 namespace MicroServices.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userRepository;
+        private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userRepository, UserManager<User> userManager, ILogger<UserController> logger)
+        public UserController(IUserService userService, UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager, ILogger<UserController> logger)
         {
-            _userRepository = userRepository;
+            _userService = userService;
             _userManager = userManager;
+            _roleManager = roleManager;
             _logger = logger;
         }
 
@@ -31,17 +32,30 @@ namespace MicroServices.Controllers
                 return BadRequest(ModelState);
             }
 
+            // Vérifier si le rôle existe, sinon le créer
+            if (!await _roleManager.RoleExistsAsync(register.Role))
+            {
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole<int> { Name = register.Role });
+                if (!createRoleResult.Succeeded)
+                {
+                    _logger.LogError("Failed to create role: {Role}", register.Role);
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Unable to create role.");
+                }
+            }
+
             var user = new User
             {
                 UserName = register.UserName,
                 Email = register.Email,
                 Fullname = register.Fullname,
+                Role = register.Role
             };
 
             // Créer l'utilisateur avec un mot de passe
             var result = await _userManager.CreateAsync(user, register.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, register.Role);
                 _logger.LogInformation("User registered successfully: {UserId}", user.Id);
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
             }
@@ -54,7 +68,7 @@ namespace MicroServices.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
+            var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 _logger.LogWarning("User not found: {UserId}", id);
@@ -68,7 +82,7 @@ namespace MicroServices.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userRepository.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync();
             _logger.LogInformation("Retrieved {UserCount} users", users.Count());
             return Ok(users);
         }
@@ -78,7 +92,7 @@ namespace MicroServices.Controllers
         {
             if (id <= 0 || register == null)
             {
-                _logger.LogWarning("Invalid update attempt: Id = {Id}, Register = {Register}", id, register);
+                _logger.LogWarning("Invalid update attempt: Id = {Id}, RegisterModel = {RegisterModel}", id, register);
                 return BadRequest("Invalid ID or request body.");
             }
 
@@ -94,6 +108,18 @@ namespace MicroServices.Controllers
                 user.UserName = register.UserName;
                 user.Email = register.Email;
                 user.Fullname = register.Fullname;
+
+                // Gérer le changement de rôle
+                if (user.Role != register.Role)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, user.Role);
+                    if (!await _roleManager.RoleExistsAsync(register.Role))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole<int> { Name = register.Role });
+                    }
+                    await _userManager.AddToRoleAsync(user, register.Role);
+                    user.Role = register.Role;
+                }
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
@@ -113,19 +139,19 @@ namespace MicroServices.Controllers
             }
         }
 
-        [HttpDelete("{id}")]        
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
-                var existingUser = await _userRepository.GetUserByIdAsync(id);
+                var existingUser = await _userService.GetUserByIdAsync(id);
                 if (existingUser == null)
                 {
                     _logger.LogWarning("User not found for deletion: {UserId}", id);
                     return NotFound();
                 }
 
-                var result = await _userRepository.DeleteUserAsync(id);
+                var result = await _userService.DeleteUserAsync(id);
                 if (!result)
                 {
                     _logger.LogError("Failed to delete user: {UserId}", id);
@@ -141,5 +167,6 @@ namespace MicroServices.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
+
     }
 }

@@ -39,7 +39,7 @@ namespace MicroServices.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(2),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Issuer"],
                 SigningCredentials = creds
