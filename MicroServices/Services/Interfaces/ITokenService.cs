@@ -1,6 +1,6 @@
-﻿using MicroServices.Models;
+﻿using MicroServicePatient.Models;
 
-namespace MicroServices.Services.Interfaces
+namespace MicroServicePatient.Services.Interfaces
 {
     public interface ITokenService
     {

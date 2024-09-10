@@ -1,4 +1,4 @@
-﻿namespace MicroServices.Data
+﻿namespace MicroServiceNote.Data
 {
     public class PatientDbSettings
     {//Settings for MongoDB

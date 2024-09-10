@@ -9,11 +9,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - MicroServicesUrl=http://microservices:80
+      - MicroServiceNoteUrl=http://microservicenote:80
       - OcelotAPIGwUrl=http://ocelotapigw:80
     ports:
       - "5211:80"
     depends_on:
       - microservices
+      - microservicenote
       - ocelotapigw
     networks:
       - app-network
@@ -26,12 +28,25 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
-      - MongoDbSettings__ConnectionString=mongodb://root:example@mongo:27017
-      - MongoDbSettings__DatabaseName=PatientDb
     ports:
       - "5000:80"
     depends_on:
       - sqlserver
+    networks:
+      - app-network
+
+  microservicenote:
+    image: ${DOCKER_REGISTRY-}microservicenote
+    build:
+      context: .
+      dockerfile: MicroServiceNote/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://root:example@mongo:27017
+      - MongoDbSettings__DatabaseName=PatientDb
+    ports:
+      - "5058:80"
+    depends_on:
       - mongo
     networks:
       - app-network

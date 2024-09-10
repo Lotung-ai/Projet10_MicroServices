@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MicroServices.Services.Interfaces;
-using MicroServices.Models;
+using MicroServicePatient.Services.Interfaces;
+using MicroServicePatient.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using MicroServices.Data;
+using MicroServicePatient.Data;
 
 
-namespace MicroServices.Controllers
+namespace MicroServicePatient.Controllers
 {
     [Authorize]
     [ApiController]

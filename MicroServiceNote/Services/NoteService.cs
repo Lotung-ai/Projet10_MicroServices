@@ -1,10 +1,10 @@
-﻿using MicroServices.Data;
-using MicroServices.Models;
-using MicroServices.Services.Interfaces;
+﻿using MicroServiceNote.Data;
+using MicroServiceNote.Models;
+using MicroServiceNote.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace MicroServices.Services
+namespace MicroServiceNote.Services
 {
     public class NoteService: INoteService
     {

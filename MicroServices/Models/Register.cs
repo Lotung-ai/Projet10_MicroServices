@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MicroServices.Models
+namespace MicroServicePatient.Models
 {
     public class Register
     {

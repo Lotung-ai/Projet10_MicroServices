@@ -1,28 +1,29 @@
-﻿using MicroServices.Models;
-using MicroServices.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using MicroServiceNote.Models;
+using MicroServiceNote.Services;
+using MicroServiceNote.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
-namespace MicroServices.Controllers
+
+namespace MicroServiceNote.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class NoteController : ControllerBase
     {
-        private readonly NoteService _patientService;
+        private readonly NoteService _noteService;
 
-        public NoteController(NoteService patientService) =>
-            _patientService = patientService;
+        public NoteController(NoteService noteService) =>
+            _noteService = noteService;
 
         [HttpGet]
         public async Task<List<Note>> Get() =>
-            await _patientService.GetAsync();
+            await _noteService.GetAsync();
 
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Note>> Get(string id)
         {
-            var patient = await _patientService.GetAsync(id);
+            var patient = await _noteService.GetAsync(id);
 
             if (patient is null)
             {
@@ -34,7 +35,7 @@ namespace MicroServices.Controllers
         [HttpGet("{patId}")]
         public async Task<ActionResult<Note>> GetPatientByPatId(int patId)
         {
-            var patient = await _patientService.GetPatientByPatIdAsync(patId);
+            var patient = await _noteService.GetPatientByPatIdAsync(patId);
             if (patient == null)
             {
                 return NotFound();
@@ -44,7 +45,7 @@ namespace MicroServices.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Note newPatient)
         {
-            await _patientService.CreateAsync(newPatient);
+            await _noteService.CreateAsync(newPatient);
 
             return CreatedAtAction(nameof(Get), new { id = newPatient.Id }, newPatient);
         }
@@ -52,7 +53,7 @@ namespace MicroServices.Controllers
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Note updatedPatient)
         {
-            var patient = await _patientService.GetAsync(id);
+            var patient = await _noteService.GetAsync(id);
 
             if (patient is null)
             {
@@ -61,7 +62,7 @@ namespace MicroServices.Controllers
 
             updatedPatient.Id = patient.Id;
 
-            await _patientService.UpdateAsync(id, updatedPatient);
+            await _noteService.UpdateAsync(id, updatedPatient);
 
             return NoContent();
         }
@@ -69,14 +70,14 @@ namespace MicroServices.Controllers
         [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var patient = await _patientService.GetAsync(id);
+            var patient = await _noteService.GetAsync(id);
 
             if (patient is null)
             {
                 return NotFound();
             }
 
-            await _patientService.RemoveAsync(id);
+            await _noteService.RemoveAsync(id);
 
             return NoContent();
         }
@@ -85,7 +86,7 @@ namespace MicroServices.Controllers
         {
             try
             {
-                await _patientService.DeletePatientByPatIdAsync(patId);
+                await _noteService.DeletePatientByPatIdAsync(patId);
                 return Ok();
             }
 

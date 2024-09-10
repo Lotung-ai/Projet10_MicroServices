@@ -1,12 +1,12 @@
-﻿using MicroServices.Services.Interfaces;
+﻿using MicroServicePatient.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using MicroServices.Models;
+using MicroServicePatient.Models;
 using System.Text;
 
-namespace MicroServices.Services
+namespace MicroServicePatient.Services
 {
     public class TokenService : ITokenService
     {

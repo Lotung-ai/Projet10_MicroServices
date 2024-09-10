@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "MicroServices": {
+    "MicroServiceNote": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -8,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5000"  // Port HTTP pour le microservice
+      "applicationUrl": "http://localhost:5058"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -23,19 +23,17 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "https://+:443;http://+:80"
+        "ASPNETCORE_URLS": "http://+:80"
       },
-      "publishAllPorts": true,
-      "useSSL": true
+      "publishAllPorts": true
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:39404",
-      "sslPort": 44363
+      "applicationUrl": "http://localhost:3874",
+      "sslPort": 0
     }
   }
 }

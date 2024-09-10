@@ -1,6 +1,6 @@
-﻿using MicroServices.Models;
+﻿using MicroServiceNote.Models;
 
-namespace MicroServices.Services.Interfaces
+namespace MicroServiceNote.Services.Interfaces
 {
     public interface INoteService
     {

@@ -1,10 +1,10 @@
-﻿using MicroServices.Models;
+﻿using MicroServicePatient.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace MicroServices.Data
+namespace MicroServicePatient.Data
 {
     public class PatientDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {

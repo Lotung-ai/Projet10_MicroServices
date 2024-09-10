@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices\MicroServices.csproj" />
+    <ProjectReference Include="..\MicroServiceNote\MicroServiceNote.csproj" />
+    <ProjectReference Include="..\MicroServices\MicroServicePatient.csproj" />
     <ProjectReference Include="..\OcelotAPIGw\OcelotAPIGw.csproj" />
   </ItemGroup>
 

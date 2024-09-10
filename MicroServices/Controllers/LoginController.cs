@@ -1,9 +1,9 @@
-﻿using MicroServices.Models;
-using MicroServices.Services.Interfaces;
+﻿using MicroServicePatient.Models;
+using MicroServicePatient.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MicroServices.Controllers
+namespace MicroServicePatient.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

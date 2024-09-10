@@ -1,10 +1,10 @@
-﻿using MicroServices.Data;
-using MicroServices.Models;
-using MicroServices.Services.Interfaces;
+﻿using MicroServicePatient.Data;
+using MicroServicePatient.Models;
+using MicroServicePatient.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace MicroServices.Services
+namespace MicroServicePatient.Services
 {
     public class PatientService : IPatientService
     {

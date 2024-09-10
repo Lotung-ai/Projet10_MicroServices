@@ -1,6 +1,7 @@
 ﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using MicroServices.Models;
+using MicroServicePatient.Models;
+using MicroServiceNote.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;

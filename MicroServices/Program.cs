@@ -1,13 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using MicroServices.Services;
-using MicroServices.Services.Interfaces;
-using MicroServices.Data;
-using MicroServices.Models;
+using MicroServicePatient.Services;
+using MicroServicePatient.Services.Interfaces;
+using MicroServicePatient.Data;
+using MicroServicePatient.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -21,11 +20,6 @@ builder.Services.AddScoped<RoleSeeder>();
 
 builder.Services.AddDbContext<PatientDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.Configure<PatientDbSettings>(
-    builder.Configuration.GetSection("PatientDatabase"));
-
-builder.Services.AddSingleton<NoteService>();
 
 builder.Services.AddControllers();
  

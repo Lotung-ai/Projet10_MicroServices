@@ -1,7 +1,7 @@
-﻿
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-namespace MicroServices.Models
+
+namespace MicroServiceNote.Models
 {
     public class Note
     {

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MicroServices.Migrations
+namespace MicroServicePatient.Migrations
 {
-    public partial class InitSQLDb : Migration
+    public partial class InitSqlData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
