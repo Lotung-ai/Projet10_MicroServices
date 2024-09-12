@@ -1,6 +1,4 @@
 ﻿using MicroFrontEnd.Models;
-using MicroServices.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +9,7 @@ namespace MicroFrontEnd.Controllers
     {
         private readonly ILogger<AccountController> _logger;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrlLogin = "http://ocelotapigw:80/gateway";
+        private readonly string _apiUrlLogin = "http://ocelotapigw:80/gateway/register";
 
         public AccountController(IHttpClientFactory httpClientFactory, ILogger<AccountController> logger)
         {
@@ -60,7 +58,7 @@ namespace MicroFrontEnd.Controllers
                     // Stocker le jeton dans les cookies
                     Response.Cookies.Append("jwt", model.JwtToken, new CookieOptions
                     {
-                        HttpOnly = true,                       
+                        HttpOnly = true,
                         SameSite = SameSiteMode.Strict,
                         Expires = DateTime.UtcNow.AddHours(2)
                     });

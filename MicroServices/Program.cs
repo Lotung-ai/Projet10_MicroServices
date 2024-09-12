@@ -1,50 +1,26 @@
-using Microsoft.EntityFrameworkCore;
-using MicroServices.Services;
-using MicroServices.Services.Interfaces;
-using MicroServices.Data;
-using MicroServices.Models;
-using Microsoft.AspNetCore.Identity;
+using MicroServicePatient.Data;
+using MicroServicePatient.Services;
+using MicroServicePatient.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddScoped<IPatientService, PatientService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<RoleSeeder>();
+
 
 
 builder.Services.AddDbContext<PatientDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.Configure<PatientDbSettings>(
-    builder.Configuration.GetSection("PatientDatabase"));
-
-builder.Services.AddSingleton<NoteService>();
-
 builder.Services.AddControllers();
- 
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Configure Identity
-builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
-{
-    options.User.RequireUniqueEmail = true;
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequiredUniqueChars = 1;
-})
-    .AddEntityFrameworkStores<PatientDbContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

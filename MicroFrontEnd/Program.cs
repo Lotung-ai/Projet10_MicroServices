@@ -1,16 +1,15 @@
-using MicroFrontEnd.Controllers;
-using MicroFrontEnd.Services.Interfaces;
 using MicroFrontEnd.Services;
-using Microsoft.AspNetCore.DataProtection;
-using Ocelot.Values;
+using MicroFrontEnd.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages(); 
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IDto, Dto>();
 builder.Services.AddScoped<IFrontService, FrontService>();
 
 var app = builder.Build();
@@ -32,6 +31,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+app.UseCookiePolicy();
 
 app.UseRouting();
 

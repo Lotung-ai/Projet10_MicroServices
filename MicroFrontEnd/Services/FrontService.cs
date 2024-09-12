@@ -1,88 +1,44 @@
 ﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using MicroServices.Models;
-using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace MicroFrontEnd.Services
 {
     public class FrontService : IFrontService
     {
+        private readonly IDto _dto;
         private readonly HttpClient _httpClient;
         private readonly ILogger<FrontService> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _apiUrlSQL = "http://ocelotapigw:80/gateway/patients";
         private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
+        private readonly string _apiUrlReport = "http://ocelotapigw:80/gateway/report";
 
-        private readonly List<string> _termesDeclencheurs = new List<string>
-    {
-        "Hémoglobine A1C", "Microalbumine", "Taille", "Poids",
-        "Fumeur", "Fumeuse", "Anormal", "Cholestérol",
-        "Vertiges", "Rechute", "Réaction", "Anticorps"
-    };
-
-        public FrontService(IHttpClientFactory httpClientFactory, ILogger<FrontService> logger)
+        public FrontService(IDto dto, IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, ILogger<FrontService> logger)
         {
-            _logger = logger;
+            _dto = dto;
             _httpClient = httpClientFactory.CreateClient();
+            _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
-        public Patient MapFrontEndToPatientApi(PatientViewModel patientViewModel)
+        private string GetJwtTokenFromCookies()
         {
-            var patient = new Patient
+            // Utilisation de l'IHttpContextAccessor pour récupérer le cookie JWT
+            var token = _httpContextAccessor.HttpContext?.Request.Cookies["jwt"];
+            return token ?? string.Empty;
+        }
+
+        // Méthode pour ajouter le token dans l'en-tête Authorization
+        private void AddJwtTokenToRequestHeaders()
+        {
+            var token = GetJwtTokenFromCookies();
+            if (!string.IsNullOrEmpty(token))
             {
-                Id = patientViewModel.Id,
-                FirstName = patientViewModel.FirstName,
-                LastName = patientViewModel.LastName,
-                DateOfBirth = patientViewModel.DateOfBirth,
-                Gender = patientViewModel.Gender,
-                Address = patientViewModel.Address,
-                PhoneNumber = patientViewModel.PhoneNumber
-            };
-
-            return patient;
-        }
-
-        public PatientViewModel MaPatientApiToPatientViewModel(Patient patient)
-        {
-            var patientViewModel = new PatientViewModel();
-
-            patientViewModel.Id = patient.Id;
-            patientViewModel.FirstName = patient.FirstName;
-            patientViewModel.LastName = patient.LastName;
-            patientViewModel.DateOfBirth = patient.DateOfBirth;
-            patientViewModel.Gender = patient.Gender;
-            patientViewModel.Address = patient.Address;
-            patientViewModel.PhoneNumber = patient.PhoneNumber;
-
-            return patientViewModel;
-        }
-
-        public Note MapFrontEndToNoteApi(NoteViewModel noteViewModel)
-        {
-            var note = new Note();
-
-            note.Id = noteViewModel.Id;
-            note.PatId = noteViewModel.PatId;
-            note.Patient = noteViewModel.Patient;
-            note.NoteText = noteViewModel.Note;
-
-            return note;
-        }
-
-        public NoteViewModel MapNoteApiToFrontEnd(Note note)
-        {
-            var noteViewModel = new NoteViewModel
-            {
-                Id = note.Id,
-                PatId = note.PatId,
-                Patient = note.Patient,
-                Note = note.NoteText
-
-            };
-
-            return noteViewModel;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
         }
 
         //Méthode Create pour créer un sqlPatient
@@ -90,7 +46,9 @@ namespace MicroFrontEnd.Services
         {
             try
             {
-                var mappedPatient = MapFrontEndToPatientApi(patient);
+                AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
+                var mappedPatient = _dto.MapFrontEndToPatientApi(patient);
                 var json = JsonSerializer.Serialize(mappedPatient);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -117,6 +75,8 @@ namespace MicroFrontEnd.Services
         //Méthode Create pour poster un note au patient
         public async Task PostNoteCreate(PatientNote patientNote)
         {
+            AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
             //DONE Mettre en relation Id patient et Id Note
             var sqlResponse = await _httpClient.GetAsync($"{_apiUrlSQL}/search?firstName={patientNote.Patient.FirstName}&lastName={patientNote.Patient.LastName}&dateOfBirth={patientNote.Patient.DateOfBirth.Year}-{patientNote.Patient.DateOfBirth.Month}-{patientNote.Patient.DateOfBirth.Day}");
 
@@ -144,8 +104,47 @@ namespace MicroFrontEnd.Services
             }
         }
 
+        //Methode pour récupérer la liste des données SQL de tous les patients dans la base
+        public async Task<List<PatientNoteViewModel>> GetPatientManagement()
+        {
+            try
+            {
+                AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+                var patientNoteViewModels = new List<PatientNoteViewModel>();
+                var SqlResponse = await _httpClient.GetAsync(_apiUrlSQL);
+
+                if (SqlResponse.IsSuccessStatusCode)
+                {
+                    var json = await SqlResponse.Content.ReadAsStringAsync();
+                    var sqlPatients = JsonSerializer.Deserialize<List<Patient>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    foreach (Patient patient in sqlPatients)
+                    {
+                        var patientNoteViewModel = new PatientNoteViewModel();
+                        patientNoteViewModel.Patient = _dto.MaPatientApiToPatientViewModel(patient);
+                        patientNoteViewModel.RiskDiabete = await CalculateAssessmentDiabetePatient(patient.Id);
+                        patientNoteViewModels.Add(patientNoteViewModel);
+                    }
+                    return patientNoteViewModels; // Assurez-vous que le nom de la vue est correct
+                }
+                else
+                {
+                    _logger.LogError("Unable to retrieve sqlPatients from API.");
+                    return new List<PatientNoteViewModel>(); // Retourne une vue avec une liste vide
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving sqlPatients.");
+                return new List<PatientNoteViewModel>(); // Retourne une vue avec une liste vide
+            }
+
+        }
+
         public async Task<Patient> GetPatientSqlDataAsync(int patientId)
         {
+            AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
             Patient patient = new Patient();
 
             var sqlResponse = await _httpClient.GetAsync($"{_apiUrlSQL}/{patientId}");
@@ -164,6 +163,8 @@ namespace MicroFrontEnd.Services
 
         public async Task<List<Note>> GetPatientMongoDataAsync(int patientId)
         {
+            AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
             List<Note> noteList = new List<Note>();
 
             var mongoResponse = await _httpClient.GetAsync($"{_apiUrlMongo}/bypatid/{patientId}");
@@ -187,13 +188,15 @@ namespace MicroFrontEnd.Services
 
             try
             {
+                AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
                 // Récupérer les données SQL
                 Patient sqlResponse = await GetPatientSqlDataAsync(patientId);
 
                 if (sqlResponse != null)
                 {
 
-                    patientNoteViewModel.Patient = MaPatientApiToPatientViewModel(sqlResponse);
+                    patientNoteViewModel.Patient = _dto.MaPatientApiToPatientViewModel(sqlResponse);
 
                 }
                 else
@@ -209,7 +212,7 @@ namespace MicroFrontEnd.Services
                     // Ajouter les notes au modèle
                     foreach (Note mongoNote in mongoResponse)
                     {
-                        NoteViewModel noteViewModel = MapNoteApiToFrontEnd(mongoNote);
+                        NoteViewModel noteViewModel = _dto.MapNoteApiToFrontEnd(mongoNote);
 
                         patientNoteViewModel.Notes.Add(noteViewModel); // Ajouter chaque note à la liste
                     }
@@ -229,7 +232,8 @@ namespace MicroFrontEnd.Services
 
         public async Task UpdatePatientData(PatientViewModel updatedPatientViewModel)
         {
-            Patient mapPatientContent = MapFrontEndToPatientApi(updatedPatientViewModel);
+            AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+            Patient mapPatientContent = _dto.MapFrontEndToPatientApi(updatedPatientViewModel);
             // Mise à jour du patient SQL
             var sqlPatientContent = new StringContent(JsonSerializer.Serialize(mapPatientContent), Encoding.UTF8, "application/json");
             var sqlResponse = await _httpClient.PutAsync($"{_apiUrlSQL}/{mapPatientContent.Id}", sqlPatientContent);
@@ -243,7 +247,9 @@ namespace MicroFrontEnd.Services
 
         public async Task UpdateNoteData(NoteViewModel updatedNoteViewModel)
         {
-            Note mapNoteContent = MapFrontEndToNoteApi(updatedNoteViewModel);
+            AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
+            Note mapNoteContent = _dto.MapFrontEndToNoteApi(updatedNoteViewModel);
             _logger.LogInformation("updatedNoteViewModel :" + updatedNoteViewModel.ToString());
             _logger.LogInformation("mapnotecontent : " + mapNoteContent.ToString());
             var mongoNoteContent = new StringContent(JsonSerializer.Serialize(mapNoteContent), Encoding.UTF8, "application/json");
@@ -255,82 +261,55 @@ namespace MicroFrontEnd.Services
             }
         }
 
-        public async Task DeleteNoteDataWithPatientId(PatientViewModel patientViewModel)
+        public async Task DeletePatientAndNote(int patientId)
         {
-            var sqlResponse = await _httpClient.GetAsync($"{_apiUrlSQL}/search?firstName={patientViewModel.FirstName}&lastName={patientViewModel.LastName}&dateOfBirth={patientViewModel.DateOfBirth.Year}-{patientViewModel.DateOfBirth.Month}-{patientViewModel.DateOfBirth.Day}");
-
-            var json = await sqlResponse.Content.ReadAsStringAsync();
-            var sqlPatient = JsonSerializer.Deserialize<Patient>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-        }
-
-        //Calcule le risque de diabète en fonction des notes (MongoDB),
-        // compare les notes avec la liste des mots déclencheurs sans tenir compte de la casse et les variations des mots. 
-        private async Task<int> CountRiskNoteAsync(int patientId)
-        {
-            List<Note> notes = await GetPatientMongoDataAsync(patientId);
-            int countNote = notes.Sum(note =>
-                _termesDeclencheurs.Count(term =>
-                    Regex.IsMatch(note.NoteText, $@"\b{term}\w*\b", RegexOptions.IgnoreCase)
-                )
-            );
-
-            return countNote;
-        }
-
-
-        //Calcule l'âge du patient
-        private async Task<int> CalculateAge(int patientId)
-        {
-            DateTime dateTime = DateTime.Now;
-            Patient patient = await GetPatientSqlDataAsync(patientId);
-            DateTime dateOfBirthday = patient.DateOfBirth;
-
-            int age = dateTime.Year - dateOfBirthday.Year;
-            if (dateOfBirthday > dateTime.AddYears(-age))
+            try
             {
-                age--;
-            }
+                AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
 
-            return age; // Fallback
+                var SqlResponse = await _httpClient.DeleteAsync($"{_apiUrlSQL}/{patientId}");
+
+                var MongoResponse = await _httpClient.DeleteAsync($"{_apiUrlMongo}/bypatid/{patientId}");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting datas Patient.");
+            }
         }
 
         //Calcule le risque de diabete
         public async Task<string> CalculateAssessmentDiabetePatient(int patientId)
         {
-            Patient patient = await GetPatientSqlDataAsync(patientId);
-            int age = await CalculateAge(patientId);
-            int triggerCount = await CountRiskNoteAsync(patientId);
+            string assessmentRisk = string.Empty; // Initialiser la chaîne de caractères
 
-            if (triggerCount == 0) return "None";
-
-            if (triggerCount >= 2 && triggerCount <= 5 && age > 30)
-                return "Borderline";
-
-            if (age <= 30)
+            try
             {
-                if (patient.Gender == "Male")
+                AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
+
+                // Effectuer la requête HTTP pour obtenir l'évaluation
+                var request = await _httpClient.GetAsync($"{_apiUrlReport}/{patientId}");
+
+                // Vérifier si la requête a réussi
+                if (request.IsSuccessStatusCode)
                 {
-                    if (triggerCount >= 3 && triggerCount < 5) return "In Danger";
-                    if (triggerCount >= 5) return "Early onset";
-                }
-                else if(patient.Gender == "Female")
-                {
-                    if (triggerCount >= 4 && triggerCount < 7) return "In Danger";
-                    if (triggerCount >= 7) return "Early onset";
+                    // Lire le contenu de la réponse qui est en type string et non JSON
+                    assessmentRisk = await request.Content.ReadAsStringAsync();
+
                 }
                 else
                 {
-
+                    // Ajouter des informations supplémentaires dans les logs
+                    _logger.LogError($"Failed to fetch patient assessment. Status code: {request.StatusCode}. Reason: {await request.Content.ReadAsStringAsync()}");
                 }
             }
-            else // Age > 30
+            catch (Exception ex)
             {
-                if (triggerCount == 6 || triggerCount == 7) return "In Danger";
-                if (triggerCount >= 8) return "Early onset";
+                // Loguer l'exception en cas d'erreur
+                _logger.LogError(ex, "An error occurred while fetching the patient assessment.");
             }
 
-            return "None"; // Fallback
+            return assessmentRisk;
         }
     }
 }

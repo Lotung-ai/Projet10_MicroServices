@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MicroFrontEnd.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using MicroFrontEnd.Models;
-using System.Net.Http;
-using System.Text.Json;
-using MicroServices.Models;
-using System.Text;
-
 
 namespace MicroFrontEnd.Controllers
 {
@@ -16,7 +11,6 @@ namespace MicroFrontEnd.Controllers
         public HomeController(IHttpClientFactory httpClientFactory, ILogger<HomeController> logger)
         {
             _logger = logger;
-
         }
 
         public IActionResult Index()
@@ -35,8 +29,8 @@ namespace MicroFrontEnd.Controllers
         public IActionResult PatientDetails()
         {
             return View();
-        }    
-        
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

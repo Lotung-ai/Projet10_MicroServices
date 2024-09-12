@@ -5,11 +5,11 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "microserviceauth",
+          "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/gateway/login",
+      "UpstreamPathTemplate": "/gateway/register/login",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -17,11 +17,11 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "microserviceauth",
+          "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/gateway/logout",
+      "UpstreamPathTemplate": "/gateway/register/logout",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -65,7 +65,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
+          "Host": "microservicenote",
           "Port": 80 // Port exposé par le microservice 
         }
       ],
@@ -77,7 +77,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
+          "Host": "microservicenote",
           "Port": 80
         }
       ],
@@ -89,12 +89,24 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
+          "Host": "microservicenote",
           "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/notemongo/bypatid/{patId}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Report/{patientId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservicereport",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/report/{patientId}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ],
   "GlobalConfiguration": {
