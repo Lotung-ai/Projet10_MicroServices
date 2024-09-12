@@ -1,8 +1,7 @@
 ﻿using MicroServiceNote.Models;
 using MicroServiceNote.Services;
-using MicroServiceNote.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace MicroServiceNote.Controllers

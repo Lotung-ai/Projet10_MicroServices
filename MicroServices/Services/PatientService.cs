@@ -1,7 +1,6 @@
 ﻿using MicroServicePatient.Data;
 using MicroServicePatient.Models;
 using MicroServicePatient.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroServicePatient.Services

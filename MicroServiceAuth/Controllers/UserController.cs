@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MicroServiceAuth.Models;
+using MicroServiceAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MicroServiceAuth.Models;
-using MicroServiceAuth.Services.Interfaces;
 
 namespace MicroServiceAuth.Controllers
 {

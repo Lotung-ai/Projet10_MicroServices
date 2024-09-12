@@ -1,12 +1,7 @@
 ﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using MicroServicePatient.Models;
 using MicroServiceNote.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Net.Http.Headers;
+using MicroServicePatient.Models;
 
 namespace MicroFrontEnd.Services
 {
@@ -67,7 +62,7 @@ namespace MicroFrontEnd.Services
 
             };
             return noteViewModel;
-       }    
+        }
     }
 }
 

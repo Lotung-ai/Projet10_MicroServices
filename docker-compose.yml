@@ -2,15 +2,15 @@ version: '3.4'
 
 services:
   microfrontend:
-    image: ${DOCKER_REGISTRY-}microfrontend
+    image: ${DOCKER_REGISTRY}microfrontend
     build:
       context: .
       dockerfile: MicroFrontEnd/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - MicroServicesUrl=http://microservices:80
-      - MicroServiceNoteUrl=http://microservicenote:80
-      - OcelotAPIGwUrl=http://ocelotapigw:80
+      - MicroServicesUrl=${MicroServicesUrl}
+      - MicroServiceNoteUrl=${MicroServiceNoteUrl}
+      - OcelotAPIGwUrl=${OcelotAPIGwUrl}
     ports:
       - "5211:80"
     depends_on:
@@ -22,13 +22,13 @@ services:
       - app-network
 
   microservices:
-    image: ${DOCKER_REGISTRY-}microservices
+    image: ${DOCKER_REGISTRY}microservices
     build:
       context: .
       dockerfile: MicroServices/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
     ports:
       - "5000:80"
     depends_on:
@@ -37,14 +37,14 @@ services:
       - app-network
 
   microservicenote:
-    image: ${DOCKER_REGISTRY-}microservicenote
+    image: ${DOCKER_REGISTRY}microservicenote
     build:
       context: .
       dockerfile: MicroServiceNote/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - MongoDbSettings__ConnectionString=mongodb://root:example@mongo:27017
-      - MongoDbSettings__DatabaseName=PatientDb
+      - MongoDbSettings__ConnectionString=${MongoDbSettings__ConnectionString}
+      - MongoDbSettings__DatabaseName=${MongoDbSettings__DatabaseName}
     ports:
       - "5058:80"
     depends_on:
@@ -53,15 +53,15 @@ services:
       - app-network
 
   microservicereport:
-    image: ${DOCKER_REGISTRY-}microservicereport
+    image: ${DOCKER_REGISTRY}microservicereport
     build:
       context: .
       dockerfile: MicroServiceReport/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
-      - MongoDbSettings__ConnectionString=mongodb://root:example@mongo:27017
-      - MongoDbSettings__DatabaseName=PatientDb
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - MongoDbSettings__ConnectionString=${MongoDbSettings__ConnectionString}
+      - MongoDbSettings__DatabaseName=${MongoDbSettings__DatabaseName}
     ports:
       - "5250:80"
     depends_on:
@@ -71,7 +71,7 @@ services:
       - app-network
 
   ocelotapigw:
-    image: ${DOCKER_REGISTRY-}ocelotapigw
+    image: ${DOCKER_REGISTRY}ocelotapigw
     build:
       context: .
       dockerfile: OcelotAPIGw/Dockerfile
@@ -83,13 +83,13 @@ services:
       - app-network
 
   microserviceauth:
-    image: ${DOCKER_REGISTRY-}microserviceauth
+    image: ${DOCKER_REGISTRY}microserviceauth
     build:
       context: .
       dockerfile: MicroServiceAuth/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
     ports:
       - "5019:80"
     depends_on:
@@ -102,7 +102,7 @@ services:
     container_name: sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=YourP@ssw0rd
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
     ports:
       - "5433:1433"
     networks:
@@ -116,8 +116,8 @@ services:
     ports:
       - "27018:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     networks:
       - app-network
     volumes:
@@ -129,9 +129,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MongoDbSettings__ConnectionString}
       ME_CONFIG_BASICAUTH: false
     networks:
       - app-network
@@ -143,4 +143,3 @@ networks:
 volumes:
   sqlserver-data:
   mongodb-data:
-

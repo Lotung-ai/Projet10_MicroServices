@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Text;
-using MicroServiceNote.Models;
-using MicroFrontEnd.Models;
+﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using System.Net.Http.Headers;
-using MicroServicePatient.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MicroFrontEnd.Controllers
 {

@@ -1,7 +1,6 @@
 ﻿using MicroServiceReport.Data;
 using MicroServiceReport.Models;
 using MicroServiceReport.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroServiceReport.Services

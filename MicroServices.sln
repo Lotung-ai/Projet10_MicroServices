@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServiceNote", "MicroSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServiceReport", "MicroServiceReport\MicroServiceReport.csproj", "{6129A303-333C-47C4-B66E-EBCAB5F23E11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroServiceAuth", "MicroServiceAuth\MicroServiceAuth.csproj", "{58141897-70F7-497B-BB5C-D259CB713674}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServiceAuth", "MicroServiceAuth\MicroServiceAuth.csproj", "{58141897-70F7-497B-BB5C-D259CB713674}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

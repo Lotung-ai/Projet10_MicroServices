@@ -1,13 +1,10 @@
 ﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using MicroServicePatient.Models;
 using MicroServiceNote.Models;
-using Microsoft.AspNetCore.Mvc;
+using MicroServicePatient.Models;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Http;
 
 namespace MicroFrontEnd.Services
 {
@@ -21,9 +18,9 @@ namespace MicroFrontEnd.Services
         private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
         private readonly string _apiUrlReport = "http://ocelotapigw:80/gateway/report";
 
-        public FrontService(IDto dto,  IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, ILogger<FrontService> logger)
+        public FrontService(IDto dto, IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, ILogger<FrontService> logger)
         {
-            _dto = dto;            
+            _dto = dto;
             _httpClient = httpClientFactory.CreateClient();
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
@@ -130,7 +127,7 @@ namespace MicroFrontEnd.Services
                         patientNoteViewModel.RiskDiabete = await CalculateAssessmentDiabetePatient(patient.Id);
                         patientNoteViewModels.Add(patientNoteViewModel);
                     }
-                    return  patientNoteViewModels; // Assurez-vous que le nom de la vue est correct
+                    return patientNoteViewModels; // Assurez-vous que le nom de la vue est correct
                 }
                 else
                 {
@@ -267,7 +264,7 @@ namespace MicroFrontEnd.Services
         }
 
         public async Task DeletePatientAndNote(int patientId)
-        {    
+        {
             try
             {
                 AddJwtTokenToRequestHeaders(); // Ajouter le token dans les en-têtes
@@ -275,12 +272,12 @@ namespace MicroFrontEnd.Services
                 var SqlResponse = await _httpClient.DeleteAsync($"{_apiUrlSQL}/{patientId}");
 
                 var MongoResponse = await _httpClient.DeleteAsync($"{_apiUrlMongo}/bypatid/{patientId}");
-                
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting datas Patient.");              
-            }           
+                _logger.LogError(ex, "Error occurred while deleting datas Patient.");
+            }
         }
 
         //Calcule le risque de diabete

@@ -5,7 +5,7 @@ namespace MicroFrontEnd.Services.Interfaces
 {
     public interface IFrontService
     {
-        
+
         public Task PostPatientCreate(PatientViewModel patient);
         public Task PostNoteCreate(PatientNote patientNote);
         public Task<List<PatientNoteViewModel>> GetPatientManagement();

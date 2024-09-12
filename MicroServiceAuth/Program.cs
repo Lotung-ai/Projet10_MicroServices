@@ -1,13 +1,10 @@
-using MicroServiceAuth.Services.Interfaces;
-using MicroServiceAuth.Services;
 using MicroServiceAuth.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.Resource;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using MicroServiceAuth.Models;
+using MicroServiceAuth.Services;
+using MicroServiceAuth.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

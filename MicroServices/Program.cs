@@ -1,10 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+using MicroServicePatient.Data;
 using MicroServicePatient.Services;
 using MicroServicePatient.Services.Interfaces;
-using MicroServicePatient.Data;
-using MicroServicePatient.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

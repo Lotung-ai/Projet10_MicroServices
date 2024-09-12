@@ -1,5 +1,4 @@
 ﻿using MicroFrontEnd.Models;
-using MicroServicePatient.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
@@ -59,7 +58,7 @@ namespace MicroFrontEnd.Controllers
                     // Stocker le jeton dans les cookies
                     Response.Cookies.Append("jwt", model.JwtToken, new CookieOptions
                     {
-                        HttpOnly = true,                       
+                        HttpOnly = true,
                         SameSite = SameSiteMode.Strict,
                         Expires = DateTime.UtcNow.AddHours(2)
                     });

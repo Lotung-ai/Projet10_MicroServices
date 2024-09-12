@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace MicroServiceReport.Services
 {
-    public class NoteService: INoteService
+    public class NoteService : INoteService
     {
         private readonly IMongoCollection<Note> _patientsCollection;
 

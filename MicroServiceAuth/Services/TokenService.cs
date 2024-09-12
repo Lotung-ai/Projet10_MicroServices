@@ -1,9 +1,9 @@
-﻿using MicroServiceAuth.Services.Interfaces;
+﻿using MicroServiceAuth.Models;
+using MicroServiceAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using MicroServiceAuth.Models;
 using System.Text;
 
 namespace MicroServiceAuth.Services

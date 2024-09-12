@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MicroServicePatient.Services.Interfaces;
+﻿using MicroServicePatient.Data;
 using MicroServicePatient.Models;
+using MicroServicePatient.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using MicroServicePatient.Data;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace MicroServicePatient.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("/api/[controller]")]    
+    [Route("/api/[controller]")]
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
@@ -24,7 +23,7 @@ namespace MicroServicePatient.Controllers
         // Impl�mentez l'API RESTFUL pour cr�er une entit� Patient dans le DataRepository
         [HttpPost]
         public async Task<IActionResult> CreatePatient([FromBody] Patient Patient)
-        {        
+        {
             try
             {
                 var createdPatient = await _patientService.CreatePatientAsync(Patient);
@@ -47,7 +46,7 @@ namespace MicroServicePatient.Controllers
 
                 return Ok(Patient);
             }
-            catch (Exception )
+            catch (Exception)
             {
 
                 return StatusCode(500, "An error occurred while getting a Patient");
@@ -82,7 +81,7 @@ namespace MicroServicePatient.Controllers
                 var updatedPatient = await _patientService.UpdatePatientAsync(Patient);
                 if (updatedPatient == null)
                 {
-                  
+
                     return NotFound();
                 }
 

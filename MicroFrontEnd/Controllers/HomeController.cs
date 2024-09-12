@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MicroFrontEnd.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using MicroFrontEnd.Models;
-using System.Net.Http;
-using System.Text.Json;
-using MicroServiceNote.Models;
-using System.Text;
 
 
 namespace MicroFrontEnd.Controllers
@@ -35,8 +31,8 @@ namespace MicroFrontEnd.Controllers
         public IActionResult PatientDetails()
         {
             return View();
-        }    
-        
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

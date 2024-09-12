@@ -1,8 +1,5 @@
-﻿using MicroServiceReport.Services.Interfaces;
-using MicroServiceReport.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Text.Json;
+﻿using MicroServiceReport.Models;
+using MicroServiceReport.Services.Interfaces;
 using System.Text.RegularExpressions;
 
 namespace MicroServiceReport.Services
@@ -22,7 +19,7 @@ namespace MicroServiceReport.Services
 
         public ReportService(IPatientService patientService, INoteService noteService)
         {
-            
+
             _patientService = patientService;
             _noteService = noteService;
 
@@ -61,7 +58,7 @@ namespace MicroServiceReport.Services
         //Calcule le risque de diabete
         public async Task<string> CalculateAssessmentDiabetePatient(int patientId)
         {
-            Patient patient = await _patientService.GetPatientByIdAsync(patientId); 
+            Patient patient = await _patientService.GetPatientByIdAsync(patientId);
             int age = await CalculateAge(patientId);
             int triggerCount = await CountRiskNoteAsync(patientId);
 
@@ -77,7 +74,7 @@ namespace MicroServiceReport.Services
                     if (triggerCount >= 3 && triggerCount < 5) return "In Danger";
                     if (triggerCount >= 5) return "Early onset";
                 }
-                else if(patient.Gender == "Female")
+                else if (patient.Gender == "Female")
                 {
                     if (triggerCount >= 4 && triggerCount < 7) return "In Danger";
                     if (triggerCount >= 7) return "Early onset";

@@ -14,7 +14,7 @@ namespace MicroFrontEnd.Models
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Date of birth is required")]
-        [DataType(DataType.Date, ErrorMessage = "Invalid date format")] 
+        [DataType(DataType.Date, ErrorMessage = "Invalid date format")]
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Gender is required")]

@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace MicroServiceNote.Services
 {
-    public class NoteService: INoteService
+    public class NoteService : INoteService
     {
         private readonly IMongoCollection<Note> _patientsCollection;
 
@@ -25,7 +25,7 @@ namespace MicroServiceNote.Services
 
         public async Task<List<Note>> GetPatientByPatIdAsync(int patId) =>
             await _patientsCollection.Find(Builders<Note>.Filter.Eq(p => p.PatId, patId)).ToListAsync();
-        
+
         public async Task CreateAsync(Note newPatient) =>
             await _patientsCollection.InsertOneAsync(newPatient);
 
