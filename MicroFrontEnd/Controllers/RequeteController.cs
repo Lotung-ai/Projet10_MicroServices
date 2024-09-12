@@ -33,7 +33,6 @@ namespace MicroFrontEnd.Controllers
                 _logger.LogError(ex, "Error retrieving sqlPatients.");
                 return View("/Views/Home/PatientManagement.cshtml", new List<PatientNoteViewModel>()); // Retourne une vue avec une liste vide
             }
-
         }
 
         [HttpPost]

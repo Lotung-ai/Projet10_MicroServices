@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-
 namespace MicroFrontEnd.Controllers
 {
     public class HomeController : Controller
@@ -12,7 +11,6 @@ namespace MicroFrontEnd.Controllers
         public HomeController(IHttpClientFactory httpClientFactory, ILogger<HomeController> logger)
         {
             _logger = logger;
-
         }
 
         public IActionResult Index()

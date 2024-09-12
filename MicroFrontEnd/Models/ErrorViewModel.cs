@@ -1,4 +1,4 @@
-namespace MicroFrontEnd.Models
+namespace MicroFrontEnd.Models  
 {
     public class ErrorViewModel
     {

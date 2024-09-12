@@ -1,7 +1,5 @@
 ﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using MicroServiceNote.Models;
-using MicroServicePatient.Models;
 
 namespace MicroFrontEnd.Services
 {

@@ -1,7 +1,5 @@
 ﻿using MicroFrontEnd.Models;
 using MicroFrontEnd.Services.Interfaces;
-using MicroServiceNote.Models;
-using MicroServicePatient.Models;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
