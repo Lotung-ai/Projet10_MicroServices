@@ -10,7 +10,7 @@ namespace MicroFrontEnd.Controllers
     {
         private readonly ILogger<AccountController> _logger;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrlLogin = "http://ocelotapigw:80/gateway";
+        private readonly string _apiUrlLogin = "http://ocelotapigw:80/gateway/register";
 
         public AccountController(IHttpClientFactory httpClientFactory, ILogger<AccountController> logger)
         {

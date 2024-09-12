@@ -1,7 +1,7 @@
-﻿using MicroServicePatient.Models;
+﻿using MicroServiceAuth.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace MicroServicePatient.Services
+namespace MicroServiceAuth.Services
 {
     public class RoleSeeder
     {

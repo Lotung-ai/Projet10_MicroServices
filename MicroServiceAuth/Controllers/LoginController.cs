@@ -1,9 +1,9 @@
-﻿using MicroServicePatient.Models;
-using MicroServicePatient.Services.Interfaces;
+﻿using MicroServiceAuth.Models;
+using MicroServiceAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MicroServicePatient.Controllers
+namespace MicroServiceAuth.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -24,7 +24,6 @@ namespace MicroServicePatient.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login model)
         {
-
 
             // Attempt to sign in the user
             var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);

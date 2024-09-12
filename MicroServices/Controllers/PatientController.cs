@@ -8,7 +8,7 @@ using MicroServicePatient.Data;
 
 namespace MicroServicePatient.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("/api/[controller]")]    
     public class PatientController : ControllerBase

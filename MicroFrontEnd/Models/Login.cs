@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MicroServicePatient.Models
+namespace MicroFrontEnd.Models
 {
     public class Login
     {

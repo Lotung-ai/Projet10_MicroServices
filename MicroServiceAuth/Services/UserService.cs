@@ -1,14 +1,15 @@
-﻿using MicroServicePatient.Data;
-using MicroServicePatient.Models;
-using MicroServicePatient.Services.Interfaces;
+﻿using MicroServiceAuth.Data;
+using MicroServiceAuth.Models;
+using MicroServiceAuth.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-namespace MicroServicePatient.Services
+
+namespace MicroServiceAuth.Services
 {
     public class UserService : IUserService
     {
-        private readonly PatientDbContext _context;
+        private readonly SqlDbContext _context;
 
-        public UserService(PatientDbContext context)
+        public UserService(SqlDbContext context)
         {
             _context = context;
         }

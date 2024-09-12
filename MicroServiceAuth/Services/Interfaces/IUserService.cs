@@ -1,6 +1,6 @@
-﻿using MicroServicePatient.Models;
+﻿using MicroServiceAuth.Models;
 
-namespace MicroServicePatient.Services.Interfaces
+namespace MicroServiceAuth.Services.Interfaces
 {
     public interface IUserService
     {

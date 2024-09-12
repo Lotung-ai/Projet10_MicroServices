@@ -17,6 +17,7 @@ services:
       - microservices
       - microservicenote
       - ocelotapigw
+      - microserviceauth
     networks:
       - app-network
 
@@ -81,6 +82,21 @@ services:
     networks:
       - app-network
 
+  microserviceauth:
+    image: ${DOCKER_REGISTRY-}microserviceauth
+    build:
+      context: .
+      dockerfile: MicroServiceAuth/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
+    ports:
+      - "5019:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - app-network
+ 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
@@ -127,3 +143,4 @@ networks:
 volumes:
   sqlserver-data:
   mongodb-data:
+

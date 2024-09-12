@@ -5,11 +5,11 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "microserviceauth",
+          "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/gateway/login",
+      "UpstreamPathTemplate": "/gateway/register/login",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -17,11 +17,11 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "microservices",
-          "Port": 80 // Port exposé par le microservice 
+          "Host": "microserviceauth",
+          "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/gateway/logout",
+      "UpstreamPathTemplate": "/gateway/register/logout",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {

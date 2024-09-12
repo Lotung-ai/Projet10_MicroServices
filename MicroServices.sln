@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServiceNote", "MicroSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServiceReport", "MicroServiceReport\MicroServiceReport.csproj", "{6129A303-333C-47C4-B66E-EBCAB5F23E11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroServiceAuth", "MicroServiceAuth\MicroServiceAuth.csproj", "{58141897-70F7-497B-BB5C-D259CB713674}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{6129A303-333C-47C4-B66E-EBCAB5F23E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6129A303-333C-47C4-B66E-EBCAB5F23E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6129A303-333C-47C4-B66E-EBCAB5F23E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58141897-70F7-497B-BB5C-D259CB713674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58141897-70F7-497B-BB5C-D259CB713674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58141897-70F7-497B-BB5C-D259CB713674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58141897-70F7-497B-BB5C-D259CB713674}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

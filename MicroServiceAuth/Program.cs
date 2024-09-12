@@ -1,28 +1,49 @@
-using Microsoft.EntityFrameworkCore;
-using MicroServicePatient.Services;
-using MicroServicePatient.Services.Interfaces;
-using MicroServicePatient.Data;
-using MicroServicePatient.Models;
-using Microsoft.AspNetCore.Identity;
+using MicroServiceAuth.Services.Interfaces;
+using MicroServiceAuth.Services;
+using MicroServiceAuth.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MicroServiceAuth.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
-ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<RoleSeeder>();
 
 
-
-builder.Services.AddDbContext<PatientDbContext>(options =>
+builder.Services.AddDbContext<SqlDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure Identity
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 1;
+})
+    .AddEntityFrameworkStores<SqlDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -69,6 +90,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -86,4 +108,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+//var scopeRequiredByApi = app.Configuration["AzureAd:Scopes"] ?? "";
+
 app.Run();
+

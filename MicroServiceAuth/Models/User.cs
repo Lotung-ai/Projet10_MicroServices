@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MicroServicePatient.Models
+namespace MicroServiceAuth.Models
 {
     public class User : IdentityUser<int>
     {

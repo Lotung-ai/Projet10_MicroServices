@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MicroServicePatient.Models;
-using MicroServicePatient.Services.Interfaces;
+using MicroServiceAuth.Models;
+using MicroServiceAuth.Services.Interfaces;
 
-namespace MicroServicePatient.Controllers
+namespace MicroServiceAuth.Controllers
 {
     [ApiController]
     [Route("[controller]")]
