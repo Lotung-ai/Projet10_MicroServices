@@ -14,8 +14,6 @@ namespace MicroFrontEnd.Controllers
         private readonly ILogger<RequeteController> _logger;
         private readonly IFrontService _frontService;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrlSQL = "http://ocelotapigw:80/gateway/patients";
-        private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
 
         public RequeteController(IHttpClientFactory httpClientFactory, ILogger<RequeteController> logger, IFrontService frontservice)
         {
@@ -30,29 +28,10 @@ namespace MicroFrontEnd.Controllers
         {
             try
             {
+                List<PatientNoteViewModel> patientNoteViewModel = await _frontService.GetPatientManagement();
 
-                var patientNoteViewModels = new List<PatientNoteViewModel>();
-                var SqlResponse = await _httpClient.GetAsync(_apiUrlSQL);
+                return View("/Views/Home/PatientManagement.cshtml", patientNoteViewModel); // Assurez-vous que le nom de la vue est correct
 
-                if (SqlResponse.IsSuccessStatusCode)
-                {
-                    var json = await SqlResponse.Content.ReadAsStringAsync();
-                    var sqlPatients = JsonSerializer.Deserialize<List<Patient>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                    foreach (Patient patient in sqlPatients)
-                    {
-                        var patientNoteViewModel = new PatientNoteViewModel();
-                        patientNoteViewModel.Patient = _frontService.MaPatientApiToPatientViewModel(patient);
-                        patientNoteViewModel.RiskDiabete = await _frontService.CalculateAssessmentDiabetePatient(patient.Id);
-                        patientNoteViewModels.Add(patientNoteViewModel);
-                    }
-                        return View("/Views/Home/PatientManagement.cshtml", patientNoteViewModels); // Assurez-vous que le nom de la vue est correct
-                }
-                else
-                {
-                    _logger.LogError("Unable to retrieve sqlPatients from API.");
-                    return View("/Views/Home/PatientManagement.cshtml", new List<PatientNoteViewModel>()); // Retourne une vue avec une liste vide
-                }
             }
             catch (Exception ex)
             {
@@ -62,16 +41,16 @@ namespace MicroFrontEnd.Controllers
 
         }
 
-        [HttpPost]        
+        [HttpPost]
         public async Task<IActionResult> PostPatientNoteCreate(PatientNote patientNote)
         {
 
             try
             {
                 //Post SQL data patient
-                 await _frontService.PostPatientCreate(patientNote.Patient);
+                await _frontService.PostPatientCreate(patientNote.Patient);
                 //Post Mongo data note
-                 await _frontService.PostNoteCreate(patientNote);
+                await _frontService.PostNoteCreate(patientNote);
                 _logger.LogInformation("Patient and notes created successfully.");
                 ViewData["SuccessMessage"] = "Patient and notes created successfully.";
                 return RedirectToAction("PatientManagement");
@@ -86,7 +65,7 @@ namespace MicroFrontEnd.Controllers
             }
         }
 
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> GetPatientDetails(int patientId)
         {
             if (patientId <= 0)
@@ -107,7 +86,7 @@ namespace MicroFrontEnd.Controllers
         }
 
         // Méthode GET pour mettre à jour un sqlPatient
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> GetPatientUpdate(int patientId)
         {
             if (patientId <= 0)
@@ -127,43 +106,9 @@ namespace MicroFrontEnd.Controllers
             return View("/Views/Home/PatientUpdate.cshtml", patientViewModel);
         }
 
-        // Méthode POST pour mettre à jour les notes
-        [HttpPut]       
-        private async Task<bool> UpdateNotesAsync(NoteViewModel note)
-        {
-            bool allUpdatesSuccessful = true;
-
-            try
-            {
-                var mongoNoteUpdateUrl = $"{_apiUrlMongo}/byid/{note.Id}";
-                _logger.LogInformation("Updating MongoDB note data at URL: {MongoNoteUpdateUrl}", mongoNoteUpdateUrl);
-
-                var mongoNoteContent = new StringContent(JsonSerializer.Serialize(note), Encoding.UTF8, "application/json");
-                var mongoResponse = await _httpClient.PutAsync(mongoNoteUpdateUrl, mongoNoteContent);
-
-                if (mongoResponse.IsSuccessStatusCode)
-                {
-                    _logger.LogInformation("Successfully updated MongoDB note ID: {NoteId}", note.Id);
-                }
-                else
-                {
-                    _logger.LogWarning("Failed to update MongoDB note ID: {NoteId}. Status Code: {StatusCode}", note.Id, mongoResponse.StatusCode);
-                    allUpdatesSuccessful = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating MongoDB note ID: {NoteId}", note.Id);
-                allUpdatesSuccessful = false;
-            }
-
-
-            return allUpdatesSuccessful;
-        }
-
-        //TODO Utiliser un Get et un Post
+        //Méthode pour update les données patient et ajouter une note
         [HttpPost]
-         public async Task<IActionResult> UpdatePatientNoteData(PatientNoteViewModel updatedPatientNoteViewModel, string NewNote)
+        public async Task<IActionResult> UpdatePatientNoteData(PatientNoteViewModel updatedPatientNoteViewModel, string NewNote)
         {
             try
             {
@@ -231,25 +176,10 @@ namespace MicroFrontEnd.Controllers
             try
             {
                 // Appel à la passerelle API via Ocelot
-                var SqlResponse = await _httpClient.DeleteAsync($"{_apiUrlSQL}/{patientId}");
+                await _frontService.DeletePatientAndNote(patientId);
 
-                if (SqlResponse.IsSuccessStatusCode)
-                {
-                    ViewData["SuccessMessage"] = "Patient deleted successfully.";
-                    
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Unable to delete sqlPatient. Please try again.");
-                }
+                ViewData["SuccessMessage"] = "Patient deleted successfully.";
 
-                var MongoResponse = await _httpClient.DeleteAsync($"{_apiUrlMongo}/bypatid/{patientId}");
-
-                if (MongoResponse.IsSuccessStatusCode)
-                {
-                    ViewData["SuccessMessage"] = "Note deleted successfully.";
-                    
-                }
             }
             catch (Exception ex)
             {

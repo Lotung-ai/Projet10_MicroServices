@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Net.Http.Headers;
 
 namespace MicroFrontEnd.Services
 {
@@ -13,6 +14,7 @@ namespace MicroFrontEnd.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<FrontService> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _apiUrlSQL = "http://ocelotapigw:80/gateway/patients";
         private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
         private readonly string _apiUrlReport = "http://ocelotapigw:80/gateway/report";
@@ -22,6 +24,22 @@ namespace MicroFrontEnd.Services
         {
             _logger = logger;
             _httpClient = httpClientFactory.CreateClient();
+        }
+        private string GetJwtTokenFromCookies()
+        {
+            // Utilisation de l'IHttpContextAccessor pour récupérer le cookie JWT
+            var token = _httpContextAccessor.HttpContext?.Request.Cookies["jwt"];
+            return token ?? string.Empty;
+        }
+
+        // Méthode pour ajouter le token dans l'en-tête Authorization
+        private void AddJwtTokenToRequestHeaders()
+        {
+            var token = GetJwtTokenFromCookies();
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
         }
 
         public Patient MapFrontEndToPatientApi(PatientViewModel patientViewModel)
@@ -140,6 +158,42 @@ namespace MicroFrontEnd.Services
             }
         }
 
+        public async Task<List<PatientNoteViewModel>> GetPatientManagement()
+        {
+            try
+            {
+
+                var patientNoteViewModels = new List<PatientNoteViewModel>();
+                var SqlResponse = await _httpClient.GetAsync(_apiUrlSQL);
+
+                if (SqlResponse.IsSuccessStatusCode)
+                {
+                    var json = await SqlResponse.Content.ReadAsStringAsync();
+                    var sqlPatients = JsonSerializer.Deserialize<List<Patient>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    foreach (Patient patient in sqlPatients)
+                    {
+                        var patientNoteViewModel = new PatientNoteViewModel();
+                        patientNoteViewModel.Patient = MaPatientApiToPatientViewModel(patient);
+                        patientNoteViewModel.RiskDiabete = await CalculateAssessmentDiabetePatient(patient.Id);
+                        patientNoteViewModels.Add(patientNoteViewModel);
+                    }
+                    return  patientNoteViewModels; // Assurez-vous que le nom de la vue est correct
+                }
+                else
+                {
+                    _logger.LogError("Unable to retrieve sqlPatients from API.");
+                    return new List<PatientNoteViewModel>(); // Retourne une vue avec une liste vide
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving sqlPatients.");
+                return new List<PatientNoteViewModel>(); // Retourne une vue avec une liste vide
+            }
+
+        }
+
         public async Task<Patient> GetPatientSqlDataAsync(int patientId)
         {
             Patient patient = new Patient();
@@ -251,13 +305,20 @@ namespace MicroFrontEnd.Services
             }
         }
 
-        public async Task DeleteNoteDataWithPatientId(PatientViewModel patientViewModel)
-        {
-            var sqlResponse = await _httpClient.GetAsync($"{_apiUrlSQL}/search?firstName={patientViewModel.FirstName}&lastName={patientViewModel.LastName}&dateOfBirth={patientViewModel.DateOfBirth.Year}-{patientViewModel.DateOfBirth.Month}-{patientViewModel.DateOfBirth.Day}");
+        public async Task DeletePatientAndNote(int patientId)
+        {    
+            try
+            {
+                // Appel à la passerelle API via Ocelot
+                var SqlResponse = await _httpClient.DeleteAsync($"{_apiUrlSQL}/{patientId}");
 
-            var json = await sqlResponse.Content.ReadAsStringAsync();
-            var sqlPatient = JsonSerializer.Deserialize<Patient>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
+                var MongoResponse = await _httpClient.DeleteAsync($"{_apiUrlMongo}/bypatid/{patientId}");
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting datas Patient.");              
+            }           
         }
 
         //Calcule le risque de diabete
