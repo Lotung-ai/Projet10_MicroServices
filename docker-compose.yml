@@ -51,6 +51,24 @@ services:
     networks:
       - app-network
 
+  microservicereport:
+    image: ${DOCKER_REGISTRY-}microservicereport
+    build:
+      context: .
+      dockerfile: MicroServiceReport/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PatientDb;User Id=SA;Password=YourP@ssw0rd;Encrypt=False;TrustServerCertificate=True;
+      - MongoDbSettings__ConnectionString=mongodb://root:example@mongo:27017
+      - MongoDbSettings__DatabaseName=PatientDb
+    ports:
+      - "5250:80"
+    depends_on:
+      - sqlserver
+      - mongo
+    networks:
+      - app-network
+
   ocelotapigw:
     image: ${DOCKER_REGISTRY-}ocelotapigw
     build:
