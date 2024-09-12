@@ -1,15 +1,11 @@
 ﻿using MicroFrontEnd.Models;
-using MicroServicePatient.Models;
 using MicroServiceNote.Models;
 
 namespace MicroFrontEnd.Services.Interfaces
 {
     public interface IFrontService
     {
-        public Patient MapFrontEndToPatientApi(PatientViewModel patientViewModel);
-        public Note MapFrontEndToNoteApi(NoteViewModel noteViewModel);
-        public PatientViewModel MaPatientApiToPatientViewModel(Patient patient);
-        public NoteViewModel MapNoteApiToFrontEnd(Note note);
+        
         public Task PostPatientCreate(PatientViewModel patient);
         public Task PostNoteCreate(PatientNote patientNote);
         public Task<List<PatientNoteViewModel>> GetPatientManagement();

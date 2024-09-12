@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MicroServiceNote.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("/api/[controller]")]
     public class NoteController : ControllerBase
