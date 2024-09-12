@@ -1,7 +1,10 @@
 using MicroServiceReport.Data;
 using MicroServiceReport.Services;
 using MicroServiceReport.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -23,18 +26,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Enregistrement des services CORS
-/*builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://frontend-domain.com")  // Changez selon votre domaine frontend
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();  // Nécessaire pour les cookies
-    });
-});
 
 // Configuration des JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -72,7 +63,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Ajout de l'autorisation
-builder.Services.AddAuthorization();*/
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
