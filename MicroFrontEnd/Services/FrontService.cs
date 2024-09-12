@@ -15,13 +15,8 @@ namespace MicroFrontEnd.Services
         private readonly ILogger<FrontService> _logger;
         private readonly string _apiUrlSQL = "http://ocelotapigw:80/gateway/patients";
         private readonly string _apiUrlMongo = "http://ocelotapigw:80/gateway/notemongo";
+        private readonly string _apiUrlReport = "http://ocelotapigw:80/gateway/report";
 
-        private readonly List<string> _termesDeclencheurs = new List<string>
-    {
-        "Hémoglobine A1C", "Microalbumine", "Taille", "Poids",
-        "Fumeur", "Fumeuse", "Anormal", "Cholestérol",
-        "Vertiges", "Rechute", "Réaction", "Anticorps"
-    };
 
         public FrontService(IHttpClientFactory httpClientFactory, ILogger<FrontService> logger)
         {
@@ -265,73 +260,36 @@ namespace MicroFrontEnd.Services
 
         }
 
-        //Calcule le risque de diabète en fonction des notes (MongoDB),
-        // compare les notes avec la liste des mots déclencheurs sans tenir compte de la casse et les variations des mots. 
-        private async Task<int> CountRiskNoteAsync(int patientId)
-        {
-            List<Note> notes = await GetPatientMongoDataAsync(patientId);
-            int countNote = notes.Sum(note =>
-                _termesDeclencheurs.Count(term =>
-                    Regex.IsMatch(note.NoteText, $@"\b{term}\w*\b", RegexOptions.IgnoreCase)
-                )
-            );
-
-            return countNote;
-        }
-
-
-        //Calcule l'âge du patient
-        private async Task<int> CalculateAge(int patientId)
-        {
-            DateTime dateTime = DateTime.Now;
-            Patient patient = await GetPatientSqlDataAsync(patientId);
-            DateTime dateOfBirthday = patient.DateOfBirth;
-
-            int age = dateTime.Year - dateOfBirthday.Year;
-            if (dateOfBirthday > dateTime.AddYears(-age))
-            {
-                age--;
-            }
-
-            return age; // Fallback
-        }
-
         //Calcule le risque de diabete
         public async Task<string> CalculateAssessmentDiabetePatient(int patientId)
         {
-            Patient patient = await GetPatientSqlDataAsync(patientId);
-            int age = await CalculateAge(patientId);
-            int triggerCount = await CountRiskNoteAsync(patientId);
+            string assessmentRisk = string.Empty; // Initialiser la chaîne de caractères
 
-            if (triggerCount == 0) return "None";
-
-            if (triggerCount >= 2 && triggerCount <= 5 && age > 30)
-                return "Borderline";
-
-            if (age <= 30)
+            try
             {
-                if (patient.Gender == "Male")
+                // Effectuer la requête HTTP pour obtenir l'évaluation
+                var request = await _httpClient.GetAsync($"{_apiUrlReport}/{patientId}");
+
+                // Vérifier si la requête a réussi
+                if (request.IsSuccessStatusCode)
                 {
-                    if (triggerCount >= 3 && triggerCount < 5) return "In Danger";
-                    if (triggerCount >= 5) return "Early onset";
-                }
-                else if(patient.Gender == "Female")
-                {
-                    if (triggerCount >= 4 && triggerCount < 7) return "In Danger";
-                    if (triggerCount >= 7) return "Early onset";
+                    // Lire le contenu de la réponse qui est en type string et non JSON
+                    assessmentRisk = await request.Content.ReadAsStringAsync();
+
                 }
                 else
                 {
-
+                    // Ajouter des informations supplémentaires dans les logs
+                    _logger.LogError($"Failed to fetch patient assessment. Status code: {request.StatusCode}. Reason: {await request.Content.ReadAsStringAsync()}");
                 }
             }
-            else // Age > 30
+            catch (Exception ex)
             {
-                if (triggerCount == 6 || triggerCount == 7) return "In Danger";
-                if (triggerCount >= 8) return "Early onset";
+                // Loguer l'exception en cas d'erreur
+                _logger.LogError(ex, "An error occurred while fetching the patient assessment.");
             }
 
-            return "None"; // Fallback
+            return assessmentRisk;
         }
     }
 }

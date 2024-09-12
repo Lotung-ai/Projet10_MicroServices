@@ -14,7 +14,7 @@ namespace MicroServiceReport.Controllers
             _reportService = reportService;
         }
 
-        [HttpGet("assessment/{patientId}")]
+        [HttpGet("{patientId}")]
         public async Task<IActionResult> GetDiabetesAssessment(int patientId)
         {
             var assessment = await _reportService.CalculateAssessmentDiabetePatient(patientId);

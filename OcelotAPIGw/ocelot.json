@@ -95,6 +95,18 @@
       ],
       "UpstreamPathTemplate": "/gateway/notemongo/bypatid/{patId}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Report/{patientId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "microservicereport",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/report/{patientId}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ],
   "GlobalConfiguration": {
